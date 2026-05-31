@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="Adara Field — Mobile Cost Estimation for Flexible Packaging">
+<meta name="theme-color" content="#0d0f14">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Adara Field">
+<link rel="manifest" href="manifest.json">
+<title>Adara · Field</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=block" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* Lock font size immediately before anything renders */
+html{font-size:14px!important;-webkit-text-size-adjust:none!important;text-size-adjust:none!important}
+</style>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --bg:#0d0f14;
+  --bg2:#13151c;
+  --bg3:#1a1d27;
+  --bg4:#20242f;
+  --line:#ffffff0f;
+  --line2:#ffffff18;
+  --c-blue:#3b82f6;
+  --c-blue-dk:#2563eb;
+  --c-blue-lt:#3b82f618;
+  --c-blue-bdr:#3b82f640;
+  --c-green:#10b981;
+  --c-green-lt:#10b98118;
+  --c-orange:#f59e0b;
+  --c-orange-lt:#f59e0b18;
+  --c-red:#ef4444;
+  --c-red-lt:#ef444418;
+  --c-purple:#8b5cf6;
+  --c-purple-lt:#8b5cf618;
+  --txt:#e8ecf4;
+  --txt2:#9ba3b4;
+  --txt3:#5c6478;
+  --r:10px;
+  --r-sm:7px;
+  --r-lg:14px;
+  --nav-h:58px;
+  --hdr-h:52px;
+}
+
+html{height:100%;-webkit-text-size-adjust:none !important;text-size-adjust:none !important;font-size:14px !important}body{height:100%;overflow:hidden;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:14px !important;-webkit-text-size-adjust:none !important;text-size-adjust:none !important}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#ffffff20;border-radius:4px}
+
+/* ══════════════════════════════════════════
+   APP SHELL
+══════════════════════════════════════════ */
+#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* ── TOP HEADER ── */
+.app-header{
+  height:var(--hdr-h);flex-shrink:0;
+  background:var(--bg2);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;
+  position:relative;z-index:50;
+}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-back{width:32px;height:32px;border-radius:var(--r-sm);border:1px solid var(--line2);background:transparent;color:var(--txt2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px}
+.hdr-back:active{background:var(--bg3)}
+.hdr-title{font-size:15px;font-weight:600;color:var(--txt)}
+.hdr-sub{font-size:11px;color:var(--txt3);margin-top:1px}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.hdr-btn{width:32px;height:32px;border-radius:var(--r-sm);border:1px solid var(--line2);background:transparent;color:var(--txt2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px}
+.hdr-btn:active{background:var(--bg3)}
+.hdr-dot{width:7px;height:7px;border-radius:50%;background:var(--c-orange);position:absolute;top:6px;right:6px}
+
+/* ── SCROLL AREA ── */
+.screen-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  height:var(--nav-h);flex-shrink:0;
+  background:var(--bg2);border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(4,1fr);
+  position:relative;z-index:50;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;color:var(--txt3);
+  transition:color 0.12s;position:relative;
+}
+.nav-item.active{color:var(--c-blue)}
+.nav-item i{font-size:18px}
+.nav-item span{font-size:9px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase}
+.nav-badge{
+  position:absolute;top:6px;right:calc(50% - 14px);
+  background:var(--c-blue);color:#fff;
+  font-size:8px;font-weight:700;
+  min-width:14px;height:14px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 3px;
+}
+
+/* ══════════════════════════════════════════
+   SCREENS
+══════════════════════════════════════════ */
+.screen{display:none;min-height:100%}
+.screen.active{display:block}
+
+/* ══════════════════════════════════════════
+   HOME SCREEN
+══════════════════════════════════════════ */
+.home-hero{
+  margin:14px 14px 0;
+  background:linear-gradient(135deg,#1a2a4a 0%,#0d1e38 60%,#111827 100%);
+  border-radius:var(--r-lg);border:1px solid var(--c-blue-bdr);
+  padding:18px;position:relative;overflow:hidden;
+}
+.home-hero::after{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:140px;height:140px;
+  background:radial-gradient(circle,rgba(59,130,246,.25),transparent 70%);
+  pointer-events:none;
+}
+.hero-label{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--c-blue);margin-bottom:5px}
+.hero-title{font-size:14px;font-weight:700;color:#fff;line-height:1.25;margin-bottom:8px}
+.hero-pills{display:flex;flex-wrap:wrap;gap:6px}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:20px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.06);
+  font-size:11px;color:rgba(255,255,255,0.7);
+}
+.hero-pill i{font-size:10px;color:var(--c-blue)}
+
+.kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 10px 0}
+.kpi-card{
+  background:var(--bg2);border:1px solid var(--line);
+  border-radius:var(--r);padding:12px 14px;cursor:pointer;
+  transition:border-color 0.12s;
+}
+.kpi-card:active{background:var(--bg3)}
+.kpi-card-icon{width:28px;height:28px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:13px}
+.kpi-card-icon.blue{background:var(--c-blue-lt);color:var(--c-blue)}
+.kpi-card-icon.green{background:var(--c-green-lt);color:var(--c-green)}
+.kpi-card-icon.orange{background:var(--c-orange-lt);color:var(--c-orange)}
+.kpi-card-icon.purple{background:var(--c-purple-lt);color:var(--c-purple)}
+.kpi-val{font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:var(--txt);line-height:1}
+.kpi-lbl{font-size:8px;color:var(--txt3);margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px}
+
+.section-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 14px 8px}
+.section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3)}
+.section-action{font-size:12px;color:var(--c-blue);font-weight:600}
+
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px}
+.qa-btn{
+  background:var(--bg2);border:1px solid var(--line);
+  border-radius:var(--r);padding:14px;
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+  transition:border-color 0.12s;
+}
+.qa-btn:active{background:var(--bg3)}
+.qa-btn.primary{background:var(--c-blue);border-color:var(--c-blue);grid-column:1/-1}
+.qa-btn.primary .qa-label{color:#fff}
+.qa-btn.primary .qa-sub{color:rgba(255,255,255,0.65)}
+.qa-icon{width:32px;height:32px;border-radius:var(--r-sm);background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--c-blue);flex-shrink:0}
+.qa-btn.primary .qa-icon{background:rgba(255,255,255,0.15);color:#fff}
+.qa-label{font-size:12px;font-weight:600;color:var(--txt)}
+.qa-sub{font-size:9px;color:var(--txt3);margin-top:1px}
+
+.recent-list{padding:0 14px 14px}
+.est-row{
+  background:var(--bg2);border:1px solid var(--line);
+  border-radius:var(--r);padding:12px 14px;
+  margin-bottom:7px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;
+  transition:border-color 0.12s;
+}
+.est-row:active{background:var(--bg3)}
+.est-row-icon{width:34px;height:34px;border-radius:var(--r-sm);background:var(--c-blue-lt);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--c-blue);flex-shrink:0}
+.est-row-body{flex:1;min-width:0}
+.est-row-name{font-size:13px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.est-row-doc{font-size:10px;color:var(--txt3);margin-top:2px;font-family:'DM Mono',monospace}
+.est-row-right{text-align:right;flex-shrink:0}
+.est-row-price{font-size:13px;font-weight:700;color:var(--c-green);font-family:'DM Mono',monospace}
+.est-row-date{font-size:9px;color:var(--txt3);margin-top:2px}
+.status-pill{display:inline-block;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase}
+.status-pill.submitted{background:var(--c-green-lt);color:var(--c-green)}
+.status-pill.draft{background:var(--c-orange-lt);color:var(--c-orange)}
+
+/* ══════════════════════════════════════════
+   ESTIMATES LIST SCREEN
+══════════════════════════════════════════ */
+.search-bar{
+  margin:10px 14px;
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg2);border:1px solid var(--line2);
+  border-radius:var(--r);padding:9px 12px;
+}
+.search-bar i{font-size:13px;color:var(--txt3)}
+.search-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--txt);font-size:13px;font-family:'DM Sans',sans-serif}
+.search-bar input::placeholder{color:var(--txt3)}
+
+.filter-chips{display:flex;gap:6px;padding:0 14px 8px;overflow-x:auto;scrollbar-width:none}
+.filter-chips::-webkit-scrollbar{display:none}
+.fchip{
+  flex-shrink:0;padding:4px 12px;border-radius:20px;
+  border:1px solid var(--line2);background:var(--bg2);
+  font-size:11px;font-weight:600;color:var(--txt2);cursor:pointer;
+}
+.fchip.active{background:var(--c-blue);border-color:var(--c-blue);color:#fff}
+
+.est-list-items{padding:0 14px 80px}
+
+/* ══════════════════════════════════════════
+   EDIT / NEW ESTIMATION SCREEN  
+══════════════════════════════════════════ */
+.est-form-wrap{padding:10px 14px 100px}
+
+.form-section{
+  background:var(--bg2);border:1px solid var(--line);
+  border-radius:var(--r);margin-bottom:10px;
+  overflow:hidden;
+}
+.form-section-hdr{
+  padding:12px 14px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;
+}
+.form-section-hdr-left{display:flex;align-items:center;gap:10px}
+.form-section-ico{
+  width:30px;height:30px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+}
+.form-section-ico.blue{background:var(--c-blue-lt);color:var(--c-blue)}
+.form-section-ico.green{background:var(--c-green-lt);color:var(--c-green)}
+.form-section-ico.orange{background:var(--c-orange-lt);color:var(--c-orange)}
+.form-section-ico.purple{background:var(--c-purple-lt);color:var(--c-purple)}
+.form-section-title{font-size:13px;font-weight:700;color:var(--txt)}
+.form-section-sub{font-size:10px;color:var(--txt3);margin-top:1px}
+.form-section-chevron{color:var(--txt3);font-size:11px;transition:transform 0.2s}
+.form-section-chevron.open{transform:rotate(180deg)}
+.form-section-body{padding:12px 14px;display:none}
+.form-section-body.open{display:block}
+
+.mfield{margin-bottom:10px}
+.mfield:last-child{margin-bottom:0}
+.mfield label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3);margin-bottom:5px}
+.mfield input,.mfield select{
+  width:100%;background:var(--bg3);border:1px solid var(--line2);
+  border-radius:var(--r-sm);padding:9px 12px;
+  font-size:13px;font-family:'DM Sans',sans-serif;color:var(--txt);
+  outline:none;transition:border-color 0.15s;
+  -webkit-appearance:none;appearance:none;
+}
+.mfield input:focus,.mfield select:focus{border-color:var(--c-blue)}
+.mfield input::placeholder{color:var(--txt3)}
+.mfield-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mfield-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* VAT toggle */
+.vat-row{display:flex;gap:8px}
+.vat-opt{
+  flex:1;padding:8px;border-radius:var(--r-sm);border:1px solid var(--line2);
+  background:var(--bg3);text-align:center;cursor:pointer;
+  font-size:12px;font-weight:600;color:var(--txt2);transition:all 0.12s;
+}
+.vat-opt.active{background:var(--c-blue);border-color:var(--c-blue);color:#fff}
+
+/* Material chips in form */
+.mat-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.mat-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 8px 4px 10px;border-radius:20px;
+  background:var(--bg3);border:1px solid var(--line2);
+  font-size:11px;color:var(--txt2);
+}
+.mat-chip button{background:none;border:none;color:var(--txt3);cursor:pointer;padding:0;line-height:1;font-size:11px}
+.mat-chip button:active{color:var(--c-red)}
+.mat-chip.film{border-color:rgba(16,185,129,.35);color:var(--c-green)}
+.mat-chip.layer{border-color:rgba(59,130,246,.35);color:var(--c-blue)}
+.mat-chip.resin{border-color:rgba(245,158,11,.35);color:var(--c-orange)}
+.mat-chip.masterbatch{border-color:rgba(139,92,246,.35);color:var(--c-purple)}
+.mat-chip.tinta,.mat-chip.ink{border-color:rgba(236,72,153,.35);color:#ec4899}
+.mat-chip.adhesive{border-color:rgba(249,115,22,.35);color:#f97316}
+
+.add-mat-btn{
+  width:100%;padding:9px;border-radius:var(--r-sm);
+  border:1px dashed var(--line2);background:transparent;
+  color:var(--c-blue);font-size:12px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+}
+.add-mat-btn:active{background:var(--c-blue-lt)}
+
+/* Liquid coating inputs */
+.liq-coating-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 0;border-bottom:1px solid var(--line);
+}
+.liq-coating-row:last-child{border-bottom:none}
+.liq-coating-name{font-size:12px;color:var(--txt);flex:1}
+.liq-coating-type{font-size:9px;color:var(--txt3);margin-top:1px}
+.liq-coating-input{width:70px;background:var(--bg3);border:1px solid var(--line2);border-radius:var(--r-sm);padding:5px 8px;font-size:12px;color:var(--txt);text-align:right;outline:none;font-family:'DM Mono',monospace}
+.liq-coating-input:focus{border-color:var(--c-blue)}
+.liq-coating-unit{font-size:10px;color:var(--txt3);width:20px;text-align:right}
+
+/* Cost summary in form */
+.cost-summary-bar{
+  background:linear-gradient(135deg,#0d2048,#091530);
+  border:1px solid var(--c-blue-bdr);
+  border-radius:var(--r);margin-bottom:10px;
+  padding:14px;
+}
+.csb-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.csb-row:last-child{margin-bottom:0;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);margin-top:4px}
+.csb-label{font-size:11px;color:rgba(255,255,255,0.5)}
+.csb-val{font-size:13px;font-weight:700;color:#fff;font-family:'DM Mono',monospace}
+.csb-val.big{font-size:20px;color:var(--c-blue)}
+.csb-val.green{color:var(--c-green)}
+
+/* save button */
+.save-fab{
+  position:fixed;bottom:calc(var(--nav-h) + 10px);left:14px;right:14px;
+  height:48px;border-radius:var(--r);
+  background:var(--c-blue);border:none;
+  color:#fff;font-size:14px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  cursor:pointer;z-index:40;font-family:'DM Sans',sans-serif;
+  box-shadow:0 4px 20px rgba(59,130,246,0.4);
+  transition:background 0.12s;
+}
+.save-fab:active{background:var(--c-blue-dk)}
+.save-fab.hidden{display:none}
+
+/* stat strip in form */
+.stat-strip{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--line);
+  border-radius:var(--r);overflow:hidden;margin-bottom:10px;
+  border:1px solid var(--line);
+}
+.stat-cell{background:var(--bg2);padding:10px;text-align:center}
+.stat-cell-val{font-size:15px;font-weight:700;font-family:'DM Mono',monospace;color:var(--txt)}
+.stat-cell-lbl{font-size:9px;color:var(--txt3);margin-top:2px;text-transform:uppercase;letter-spacing:0.4px}
+
+/* ══════════════════════════════════════════
+   MATERIAL PICKER MODAL
+══════════════════════════════════════════ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.6);z-index:200;
+  align-items:flex-end;
+}
+.modal-overlay.show{display:flex}
+.modal-sheet{
+  width:100%;max-height:85vh;background:var(--bg2);
+  border-radius:var(--r-lg) var(--r-lg) 0 0;
+  border:1px solid var(--line2);border-bottom:none;
+  display:flex;flex-direction:column;
+  animation:slideUp 0.2s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.sheet-handle{width:36px;height:3px;background:var(--line2);border-radius:2px;margin:10px auto 4px}
+.sheet-hdr{padding:8px 14px 12px;border-bottom:1px solid var(--line);flex-shrink:0}
+.sheet-title{font-size:14px;font-weight:700;color:var(--txt)}
+.sheet-sub{font-size:11px;color:var(--txt3);margin-top:2px}
+.sheet-search{margin:8px 0 0;display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--line2);border-radius:var(--r-sm);padding:7px 12px}
+.sheet-search i{color:var(--txt3);font-size:12px}
+.sheet-search input{flex:1;background:transparent;border:none;outline:none;color:var(--txt);font-size:13px;font-family:'DM Sans',sans-serif}
+.sheet-search input::placeholder{color:var(--txt3)}
+.sheet-body{flex:1;overflow-y:auto;padding:8px 14px}
+.sheet-footer{padding:10px 14px 16px;border-top:1px solid var(--line);flex-shrink:0;display:flex;gap:8px}
+
+.mat-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid var(--line);
+}
+.mat-item:last-child{border-bottom:none}
+.mat-item-left{flex:1;min-width:0}
+.mat-item-name{font-size:13px;font-weight:600;color:var(--txt);margin-bottom:2px}
+.mat-item-meta{font-size:10px;color:var(--txt3)}
+.mat-item-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;margin-right:5px;border:1px solid}
+.mat-item-badge.FIL{background:#d4edda30;color:#10b981;border-color:#10b98160}
+.mat-item-badge.LAY{background:#dbeafe30;color:#3b82f6;border-color:#3b82f660}
+.mat-item-badge.RES{background:#fef3c730;color:#f59e0b;border-color:#f59e0b60}
+.mat-item-badge.MAS{background:#ede9fe30;color:#8b5cf6;border-color:#8b5cf660}
+.mat-item-badge.INK{background:#fae8ff30;color:#ec4899;border-color:#ec489960}
+.mat-item-badge.ADH{background:#ffedd530;color:#f97316;border-color:#f9731660}
+.mat-item-badge.ANC{background:#e0f2fe30;color:#06b6d4;border-color:#06b6d460}
+.mat-item-badge.SOL{background:#d1fae530;color:#10b981;border-color:#10b98160}
+.mat-item-badge.PCR{background:#f3f4f630;color:#9ca3af;border-color:#9ca3af60}
+.mat-item-badge.CTS{background:#fef9c330;color:#f59e0b;border-color:#f59e0b60}
+.mat-item-add{
+  width:28px;height:28px;border-radius:var(--r-sm);
+  background:var(--c-blue);border:none;
+  color:#fff;font-size:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:10px;
+}
+.mat-item-add:active{background:var(--c-blue-dk)}
+.mat-item-chk{
+  width:20px;height:20px;border-radius:4px;
+  border:2px solid var(--line2);background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;margin-left:10px;
+  transition:all 0.12s;
+}
+.mat-item-chk.checked{background:var(--c-blue);border-color:var(--c-blue)}
+.mat-item-chk.checked::after{content:'✓';font-size:11px;color:#fff;font-weight:700}
+
+/* ══════════════════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════════════════ */
+#loginScreen{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;
+}
+#loginScreen.show{display:flex}
+.login-brand{text-align:center;margin-bottom:36px}
+.login-logo{
+  width:56px;height:56px;background:var(--c-blue);
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:24px;color:#fff;margin:0 auto 16px;
+  box-shadow:0 8px 24px rgba(59,130,246,0.4);
+}
+.login-name{font-size:22px;font-weight:700;color:var(--txt)}
+.login-sub{font-size:12px;color:var(--txt3);margin-top:4px;letter-spacing:0.5px}
+.login-card{
+  width:100%;max-width:340px;background:var(--bg2);
+  border:1px solid var(--line2);border-radius:var(--r-lg);padding:24px;
+}
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3);margin-bottom:6px}
+.login-field input{
+  width:100%;background:var(--bg3);border:1px solid var(--line2);
+  border-radius:var(--r-sm);padding:11px 14px;
+  font-size:14px;font-family:'DM Sans',sans-serif;color:var(--txt);
+  outline:none;
+}
+.login-field input:focus{border-color:var(--c-blue)}
+.login-err{
+  display:none;background:var(--c-red-lt);border:1px solid rgba(239,68,68,.3);
+  border-radius:var(--r-sm);padding:8px 12px;
+  font-size:12px;color:var(--c-red);margin-bottom:14px;
+}
+.login-err.show{display:block}
+.login-btn{
+  width:100%;height:44px;background:var(--c-blue);
+  border:none;border-radius:var(--r-sm);
+  color:#fff;font-size:14px;font-weight:700;
+  font-family:'DM Sans',sans-serif;cursor:pointer;
+}
+.login-btn:active{background:var(--c-blue-dk)}
+
+/* ══════════════════════════════════════════
+   EMPTY STATES
+══════════════════════════════════════════ */
+.empty-state{
+  text-align:center;padding:60px 24px;
+}
+.empty-icon{font-size:40px;color:var(--txt3);margin-bottom:14px;opacity:0.4}
+.empty-title{font-size:15px;font-weight:700;color:var(--txt2);margin-bottom:6px}
+.empty-sub{font-size:12px;color:var(--txt3);line-height:1.6}
+
+/* ══════════════════════════════════════════
+   UTILITY
+══════════════════════════════════════════ */
+.btn-full{width:100%;height:44px;border-radius:var(--r-sm);border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-full.primary{background:var(--c-blue);color:#fff}
+.btn-full.primary:active{background:var(--c-blue-dk)}
+.btn-full.ghost{background:var(--bg3);color:var(--txt2);border:1px solid var(--line2)}
+.btn-full.ghost:active{background:var(--bg4)}
+.btn-full.danger{background:var(--c-red-lt);color:var(--c-red);border:1px solid rgba(239,68,68,.25)}
+
+.tag{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;border:1px solid}
+.tag.blue{background:var(--c-blue-lt);color:var(--c-blue);border-color:var(--c-blue-bdr)}
+.tag.green{background:var(--c-green-lt);color:var(--c-green);border-color:rgba(16,185,129,.3)}
+.tag.orange{background:var(--c-orange-lt);color:var(--c-orange);border-color:rgba(245,158,11,.3)}
+
+.divider{height:1px;background:var(--line);margin:0 14px}
+
+.toast{
+  position:fixed;bottom:calc(var(--nav-h) + 66px);left:14px;right:14px;
+  background:#1e293b;border:1px solid var(--line2);
+  border-radius:var(--r);padding:11px 14px;
+  font-size:13px;font-weight:600;color:var(--txt);
+  display:flex;align-items:center;gap:8px;z-index:1000;
+  opacity:0;transform:translateY(6px);transition:all 0.2s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success .toast-icon{color:var(--c-green)}
+.toast.error .toast-icon{color:var(--c-red)}
+.toast-icon{font-size:14px}
+
+/* ══════════════════════════════════════════
+   SUMMARY SCREEN (read-only financial view)
+══════════════════════════════════════════ */
+.summary-wrap{padding:12px 14px 100px}
+.sum-doc{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.sum-doc-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px}
+.sum-doc-lbl{color:var(--txt3)}
+.sum-doc-val{color:var(--txt);font-weight:600}
+.sum-kpi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.sum-kpi-card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.sum-kpi-card.accent{background:linear-gradient(135deg,#1a3a6b,#0f2650);border-color:var(--c-blue-bdr)}
+.sum-kpi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--txt3);margin-bottom:4px}
+.sum-kpi-card.accent .sum-kpi-lbl{color:rgba(255,255,255,0.45)}
+.sum-kpi-val{font-size:17px;font-weight:700;color:var(--txt);font-family:'DM Mono',monospace}
+.sum-kpi-card.accent .sum-kpi-val{color:#fff}
+.sum-section{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.sum-section-hdr{padding:10px 14px;background:var(--bg3);border-bottom:1px solid var(--line);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt2);display:flex;align-items:center;gap:6px}
+.sum-mat-row{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--line);font-size:12px}
+.sum-mat-row:last-child{border-bottom:none}
+.sum-mat-name{color:var(--txt);font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sum-mat-amt{font-family:'DM Mono',monospace;font-weight:700;color:var(--c-blue);margin-left:10px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="show">
+  <div class="login-brand">
+    <div class="login-logo"><i class="fas fa-layer-group"></i></div>
+    <div class="login-name">Adara Field</div>
+    <div class="login-sub">Mobile Cost Estimation</div>
+  </div>
+  <div class="login-card">
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="mLoginUser" placeholder="Enter username" autocomplete="off">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="mLoginPass" placeholder="Enter password">
+    </div>
+    <div class="login-err" id="mLoginErr">Incorrect username or password</div>
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <i class="fas fa-check-circle toast-icon"></i>
+  <span id="toastMsg">Saved</span>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="hdr-left">
+      <button class="hdr-back" id="hdrBack" onclick="goBack()" style="display:none"><i class="fas fa-chevron-left"></i></button>
+      <div>
+        <div class="hdr-title" id="hdrTitle">Home</div>
+        <div class="hdr-sub" id="hdrSub" style="display:none"></div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <button class="hdr-btn" id="hdrSaveBtn" onclick="saveCurrentEstimation()" style="display:none" title="Save">
+        <i class="fas fa-save"></i>
+      </button>
+      <button class="hdr-btn" id="hdrNewBtn" onclick="startNewEstimation()" style="display:none" title="New">
+        <i class="fas fa-plus"></i>
+      </button>
+      <button class="hdr-btn" onclick="doLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <!-- SCREENS -->
+  <div class="screen-scroll">
+
+    <!-- HOME -->
+    <div class="screen active" id="screenHome">
+      <div class="home-hero">
+        <div class="hero-label">Mobile Costing Workspace</div>
+        <div class="hero-title">Create, review, and approve estimates from the field.</div>
+        <div class="hero-pills">
+          <span class="hero-pill"><i class="fas fa-lock"></i>Shared database</span>
+          <span class="hero-pill"><i class="fas fa-sync-alt"></i>Live synchronize</span>
+          <span class="hero-pill"><i class="fas fa-eye-slash"></i>Summary-only prices</span>
+        </div>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi-card" onclick="showScreen('screenList')">
+          <div class="kpi-card-icon blue"><i class="fas fa-file-invoice-dollar"></i></div>
+          <div class="kpi-val" id="mDashTotal">0</div>
+          <div class="kpi-lbl">Estimations</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-card-icon green"><i class="fas fa-cubes"></i></div>
+          <div class="kpi-val" id="mDashSolid">0</div>
+          <div class="kpi-lbl">Solid Mat.</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-card-icon orange"><i class="fas fa-tint"></i></div>
+          <div class="kpi-val" id="mDashLiquid">0</div>
+          <div class="kpi-lbl">Liquid Mat.</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-card-icon purple"><i class="fas fa-cog"></i></div>
+          <div class="kpi-val" id="mDashWC">0</div>
+          <div class="kpi-lbl">Work Centre</div>
+        </div>
+      </div>
+      <div class="section-hdr">
+        <span class="section-title">Quick Actions</span>
+      </div>
+      <div class="quick-actions">
+        <div class="qa-btn primary" onclick="startNewEstimation()">
+          <div class="qa-icon"><i class="fas fa-plus"></i></div>
+          <div>
+            <div class="qa-label">New Estimation</div>
+            <div class="qa-sub">Start fresh document</div>
+          </div>
+        </div>
+        <div class="qa-btn" onclick="showScreen('screenList')">
+          <div class="qa-icon"><i class="fas fa-list"></i></div>
+          <div>
+            <div class="qa-label">All Estimates</div>
+            <div class="qa-sub">Browse & edit</div>
+          </div>
+        </div>
+        <div class="qa-btn" onclick="showSummaryOfLast()">
+          <div class="qa-icon" style="color:var(--c-green)"><i class="fas fa-chart-bar"></i></div>
+          <div>
+            <div class="qa-label">Last Summary</div>
+            <div class="qa-sub">View financials</div>
+          </div>
+        </div>
+        <div class="qa-btn" onclick="openImportModal()">
+          <div class="qa-icon" style="color:var(--c-orange)"><i class="fas fa-file-import"></i></div>
+          <div>
+            <div class="qa-label">Import Data</div>
+            <div class="qa-sub">Load from file backup</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-hdr">
+        <span class="section-title">Recent</span>
+        <span class="section-action" onclick="showScreen('screenList')">See all</span>
+      </div>
+      <div class="recent-list" id="mRecentList"></div>
+    </div>
+
+    <!-- ESTIMATES LIST -->
+    <div class="screen" id="screenList">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search by name or doc number…" id="mSearchInput" oninput="filterEstList()">
+      </div>
+      <div class="filter-chips">
+        <div class="fchip active" data-filter="all" onclick="setFilter(this,'all')">All</div>
+        <div class="fchip" data-filter="Submitted" onclick="setFilter(this,'Submitted')">Submitted</div>
+        <div class="fchip" data-filter="Draft" onclick="setFilter(this,'Draft')">Draft</div>
+      </div>
+      <div class="est-list-items" id="mEstList"></div>
+    </div>
+
+    <!-- EDIT / NEW ESTIMATION -->
+    <div class="screen" id="screenEdit">
+      <div class="est-form-wrap">
+
+        <!-- cost summary bar -->
+        <div class="cost-summary-bar" id="mCostBar">
+          <div class="csb-row">
+            <span class="csb-label">Material Cost</span>
+            <span class="csb-val" id="mCostMat">0</span>
+          </div>
+          <div class="csb-row">
+            <span class="csb-label">Operational Cost</span>
+            <span class="csb-val" id="mCostOp">0</span>
+          </div>
+          <div class="csb-row">
+            <span class="csb-label">Grand Total</span>
+            <span class="csb-val" id="mCostGrand">0</span>
+          </div>
+          <div class="csb-row">
+            <span class="csb-label">Final Price (incl. margin)</span>
+            <span class="csb-val big" id="mCostFinal">0</span>
+          </div>
+          <div class="csb-row">
+            <span class="csb-label">Selling Price / <span id="mCostUomLabel">UOM</span> <span id="mVatModeLabel" style="font-size:11px;opacity:1;font-style:regular">(incl. VAT 11%)</span></span>
+            <span class="csb-val green" id="mCostPerUom">0</span>
+          </div>
+        </div>
+
+        <!-- stat strip -->
+        <div class="stat-strip">
+          <div class="stat-cell">
+            <div class="stat-cell-val" id="mStatNet">0.00</div>
+            <div class="stat-cell-lbl">Net m</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-cell-val" id="mStatQty">0.00</div>
+            <div class="stat-cell-lbl">Qty m</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-cell-val" id="mStatSqm">0.00</div>
+            <div class="stat-cell-lbl">Sq.m</div>
+          </div>
+        </div>
+
+        <!-- SECTION: Estimate Setup -->
+        <div class="form-section">
+          <div class="form-section-hdr" onclick="toggleSection('secSetup')">
+            <div class="form-section-hdr-left">
+              <div class="form-section-ico blue"><i class="fas fa-sliders-h"></i></div>
+              <div>
+                <div class="form-section-title">Estimate Setup</div>
+                <div class="form-section-sub">Product, order, and technical inputs</div>
+              </div>
+            </div>
+            <i class="fas fa-chevron-down form-section-chevron open" id="chevronSecSetup"></i>
+          </div>
+          <div class="form-section-body open" id="secSetup">
+            <div class="mfield">
+              <label>Product Name</label>
+              <input type="text" id="productName" placeholder="e.g. PENAWARAN SUPER SEED" oninput="mMarkDirty()">
+            </div>
+            <div class="mfield">
+              <label>Composition</label>
+              <input type="text" id="composition" placeholder="e.g. OPP20/PR/DL/LLDPE45" oninput="mMarkDirty()">
+            </div>
+            <div class="mfield-row">
+              <div class="mfield">
+                <label>Order Qty</label>
+                <input type="number" id="qtyOrder" placeholder="400000" oninput="mMarkDirty()">
+              </div>
+              <div class="mfield">
+                <label>UOM</label>
+                <select id="unitType" onchange="mMarkDirty()">
+                  <option value="">— select —</option>
+                  <option value="PCS">PCS</option>
+                  <option value="PBT">PBT</option>
+                  <option value="Roll">Roll</option>
+		</select>
+              </div>
+            </div>
+            <div class="mfield-row">
+              <div class="mfield">
+                <label>Lebar Roll (mm)</label>
+                <input type="number" id="lebarRoll" placeholder="200" oninput="mMarkDirty()">
+              </div>
+              <div class="mfield">
+                <label>Panjang Pitch (mm)</label>
+                <input type="number" id="panjangPitch" placeholder="300" oninput="mMarkDirty()">
+              </div>
+            </div>
+            <div class="mfield-row">
+              <div class="mfield">
+                <label>UP Value</label>
+                <input type="number" id="upValue" placeholder="2" oninput="mMarkDirty()">
+              </div>
+              <div class="mfield">
+                <label>Trimming Edge (mm)</label>
+                <input type="number" id="trimmingEdge" value="20" oninput="mMarkDirty()">
+              </div>
+            </div>
+            <div class="mfield">
+              <label>Waste Factor (%)</label>
+              <input type="number" id="wasteFactor" placeholder="3" oninput="mMarkDirty()">
+            </div>
+
+            <!-- Technical Fields (collapsible) -->
+            <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
+              <div style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="toggleSection('secTech')">
+                <span>Technical Costing Fields</span>
+                <i class="fas fa-chevron-down" id="chevronSecTech" style="font-size:10px;transition:transform 0.2s"></i>
+              </div>
+              <div id="secTech" style="display:none">
+                <div class="mfield">
+                  <label>Dry Coating Preset <span style="font-size:9px;color:var(--c-blue);font-weight:400">(auto-fill)</span></label>
+                  <button onclick="openDryCoatingModal()" style="width:100%;height:34px;background:var(--bg3);border:1px solid var(--c-blue);border-radius:var(--r-sm);color:var(--c-blue);font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer">
+                    <i class="fas fa-table"></i> Open Dry Coating Table
+                  </button>
+                </div>
+                <div class="mfield-row">
+                  <div class="mfield">
+                    <label>Dry Coating Wt</label>
+                    <input type="number" id="dryCoatingWeight" value="0" oninput="mMarkDirty()">
+                  </div>
+                  <div class="mfield">
+                    <label>Running Solid</label>
+                    <input type="number" id="runningSolid" value="0" oninput="mMarkDirty()">
+                  </div>
+                </div>
+                <div class="mfield-row">
+                  <div class="mfield">
+                    <label>Anchor Coat</label>
+                    <input type="number" id="anchorCoat" value="0" oninput="mMarkDirty()">
+                  </div>
+                  <div class="mfield">
+                    <label>Running Solid Anchor</label>
+                    <input type="number" id="runningSolidAnchor" value="0" oninput="mMarkDirty()">
+                  </div>
+                </div>
+                <div class="mfield">
+                  <label>Jumlah Warna</label>
+                  <input type="number" id="jumlahWarna" value="5" min="1" max="10" oninput="mMarkDirty()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION: Materials -->
+        <div class="form-section">
+          <div class="form-section-hdr" onclick="toggleSection('secMat')">
+            <div class="form-section-hdr-left">
+              <div class="form-section-ico orange"><i class="fas fa-cubes"></i></div>
+              <div>
+                <div class="form-section-title">Materials</div>
+                <div class="form-section-sub">Solid, liquid &amp; surcharge</div>
+              </div>
+            </div>
+            <i class="fas fa-chevron-down form-section-chevron open" id="chevronSecMat"></i>
+          </div>
+          <div class="form-section-body open" id="secMat">
+
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3);margin-bottom:6px">Solid Materials</div>
+            <div class="mat-chips" id="mSolidChips"></div>
+            <button class="add-mat-btn" onclick="openSheet('solid')"><i class="fas fa-plus"></i> Add Solid Material</button>
+
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3);margin:14px 0 6px">Liquid Materials &amp; Coating</div>
+            <div id="mLiquidCoatings"></div>
+            <button class="add-mat-btn" onclick="openSheet('liquid')" style="margin-top:6px"><i class="fas fa-plus"></i> Add Liquid Material</button>
+
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3);margin:14px 0 6px">Surcharge Materials</div>
+            <div class="mat-chips" id="mSurchargeChips"></div>
+            <button class="add-mat-btn" onclick="openSheet('surcharge')"><i class="fas fa-plus"></i> Add Surcharge Material</button>
+
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3);margin:14px 0 6px">Work Centre / Machine</div>
+            <div class="mat-chips" id="mMachineChips"></div>
+            <button class="add-mat-btn" onclick="openSheet('machine')"><i class="fas fa-plus"></i> Add Machine</button>
+          </div>
+        </div>
+
+        <!-- SECTION: Commercial Summary -->
+        <div class="form-section">
+          <div class="form-section-hdr" onclick="toggleSection('secComm')">
+            <div class="form-section-hdr-left">
+              <div class="form-section-ico green"><i class="fas fa-dollar-sign"></i></div>
+              <div>
+                <div class="form-section-title">Commercial Summary</div>
+                <div class="form-section-sub">Cost, price, FX, and margin</div>
+              </div>
+            </div>
+            <i class="fas fa-chevron-down form-section-chevron" id="chevronSecComm"></i>
+          </div>
+          <div class="form-section-body" id="secComm">
+            <div class="mfield-row">
+              <div class="mfield">
+                <label>Currency</label>
+                <select id="currencyType" onchange="mMarkDirty()">
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="SGD">SGD</option>
+                  <option value="IDR">IDR</option>
+                </select>
+              </div>
+              <div class="mfield">
+                <label>Exchange Rate</label>
+                <input type="number" id="currencyRate" placeholder="16000" oninput="mMarkDirty()">
+              </div>
+            </div>
+            <div class="mfield">
+              <label>Category Tier (Margin)</label>
+              <select id="categoryTier" onchange="mMarkDirty()">
+                <option value="">— select —</option>
+                <option value="Discretion">Discretion (8%)</option>
+                <option value="Low-End">Low-End (10%)</option>
+                <option value="Mid-End">Mid-End (15%)</option>
+                <option value="High-End">High-End (20%)</option>
+                <option value="Sophisticated">Sophisticated (25%)</option>
+              </select>
+            </div>
+            <div class="mfield">
+              <label>VAT Mode</label>
+              <div class="vat-row">
+                <div class="vat-opt active" id="vatOptVAT" onclick="setVAT('vat')">Include VAT (11%)</div>
+                <div class="vat-opt" id="vatOptNOVAT" onclick="setVAT('novat')">Exclude VAT</div>
+              </div>
+              <input type="hidden" id="vatModeHidden" value="vat">
+            </div>
+            <div class="mfield">
+              <label>Grouping Product</label>
+              <select id="groupingProduct" onchange="mMarkDirty()">
+                <option value="">— select —</option>
+              </select>
+            </div>
+            <div class="mfield">
+              <label>Sales Person</label>
+              <select id="salesPersonSelect" onchange="mMarkDirty()">
+                <option value="">— select —</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /est-form-wrap -->
+    </div><!-- /screenEdit -->
+
+    <!-- SUMMARY SCREEN -->
+    <div class="screen" id="screenSummary">
+      <div class="summary-wrap" id="mSummaryWrap"></div>
+    </div>
+
+  </div><!-- /screen-scroll -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" id="navHome" onclick="showScreen('screenHome')">
+      <i class="fas fa-home"></i><span>Home</span>
+    </div>
+    <div class="nav-item" id="navList" onclick="showScreen('screenList')">
+      <i class="fas fa-list-ul"></i><span>Estimates</span>
+      <div class="nav-badge" id="navBadge" style="display:none">0</div>
+    </div>
+    <div class="nav-item" id="navEdit" onclick="showScreen('screenEdit')" style="display:none">
+      <i class="fas fa-edit"></i><span>Edit</span>
+    </div>
+    <div class="nav-item" id="navSummary" onclick="showSummary()">
+      <i class="fas fa-chart-pie"></i><span>Summary</span>
+    </div>
+  </nav>
+
+  <!-- SAVE FAB -->
+  <button class="save-fab hidden" id="saveFab" onclick="saveCurrentEstimation()">
+    <i class="fas fa-save"></i> Save &amp; Recalculate
+  </button>
+
+</div><!-- /app -->
+
+<!-- MATERIAL PICKER MODAL -->
+<div class="modal-overlay" id="matModal">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-hdr">
+      <div class="sheet-title" id="sheetTitle">Select Material</div>
+      <div class="sheet-sub" id="sheetSub">Tap to add</div>
+      <div class="sheet-search">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search…" id="sheetSearch" oninput="filterSheetItems()">
+      </div>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+    <div class="sheet-footer">
+      <button class="btn-full ghost" onclick="closeSheet()">Cancel</button>
+      <button class="btn-full primary" id="sheetApplyBtn" onclick="applySheet()" style="display:none">Apply Selection</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// ADARA FIELD — Mobile App
+// Shares IndexedDB 'CirrusEstimationDB' with desktop v15
+// ════════════════════════════════════════════════════════════
+
+// ── STATE ──────────────────────────────────────────────────
+const IDB_NAME = 'CirrusEstimationDB';
+const IDB_VERSION = 2;
+let _db = null;
+let _idbOk = true;
+
+let masterSolid = [], masterLiquid = [], masterWC = [];
+let masterSurcharge = [], masterMachineOp = [];
+let masterSalesPerson = [], masterGroupingProduct = [], masterDryCoating = [];
+// Expose to window for import function dynamic access
+Object.defineProperty(window, 'masterSolid',           { get: ()=>masterSolid,           set: v=>{ masterSolid=v; } });
+Object.defineProperty(window, 'masterLiquid',          { get: ()=>masterLiquid,          set: v=>{ masterLiquid=v; } });
+Object.defineProperty(window, 'masterWC',              { get: ()=>masterWC,              set: v=>{ masterWC=v; } });
+Object.defineProperty(window, 'masterSurcharge',       { get: ()=>masterSurcharge,       set: v=>{ masterSurcharge=v; } });
+Object.defineProperty(window, 'masterDryCoating',      { get: ()=>masterDryCoating,      set: v=>{ masterDryCoating=v; } });
+Object.defineProperty(window, 'masterSalesPerson',     { get: ()=>masterSalesPerson,     set: v=>{ masterSalesPerson=v; } });
+Object.defineProperty(window, 'masterGroupingProduct', { get: ()=>masterGroupingProduct, set: v=>{ masterGroupingProduct=v; } });
+Object.defineProperty(window, 'estimations',           { get: ()=>estimations,           set: v=>{ estimations=v; } });
+let estimations = [];
+let userProfile = {};
+
+let selectedSolidEntries = [], selectedLiquidIndices = [], selectedSurchargeEntries = [];
+let liquidCoatingOverrides = {};
+let solidUidCounter = 0, surchargeUidCounter = 0;
+let activeSolidSnapshot = null, activeLiquidSnapshot = null, activeSurchargeSnapshot = null;
+let tempLiquidSelection = [], tempMachineSelection = [];
+let formIsDirty = false;
+let currentEditId = null;
+let currentDocNumber = 'EST-' + new Date().getFullYear() + '-0001';
+let currentVatMode = 'vat';
+let currentScreen = 'screenHome';
+let screenHistory = [];
+let currentFilter = 'all';
+let currentSheetType = '';
+let sheetAllItems = [];
+
+// ── IDB ────────────────────────────────────────────────────
+function openDB() {
+  return new Promise((res, rej) => {
+    if (_db) { res(_db); return; }
+    const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      ['solid','liquid','wc','surcharge','dryCoating','estimations','templates','config','users','appointments','salesPerson','groupingProduct']
+        .forEach(s => { if (!db.objectStoreNames.contains(s)) {
+          if (s === 'estimations') db.createObjectStore(s, {keyPath:'id',autoIncrement:true});
+          else if (s === 'config' || s === 'users') db.createObjectStore(s, {keyPath:'key'});
+          else db.createObjectStore(s, {keyPath:'id',autoIncrement:true});
+        }});
+    };
+    req.onsuccess = e => { _db = e.target.result; res(_db); };
+    req.onerror   = e => { _idbOk = false; rej(e.target.error); };
+  });
+}
+function idbGetAll(store) {
+  return openDB().then(db => new Promise((res,rej)=>{
+    const tx = db.transaction(store,'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = ()=>res(req.result||[]);
+    req.onerror = e=>rej(e.target.error);
+  })).catch(()=>[]);
+}
+function idbConfigGet(key) {
+  return openDB().then(db=>new Promise((res,rej)=>{
+    const tx = db.transaction('config','readonly');
+    const req = tx.objectStore('config').get(key);
+    req.onsuccess = ()=>res(req.result?req.result.value:null);
+    req.onerror = e=>rej(e.target.error);
+  })).catch(()=>null);
+}
+function idbConfigSet(key, value) {
+  return openDB().then(db=>new Promise((res,rej)=>{
+    const tx = db.transaction('config','readwrite');
+    const req = tx.objectStore('config').put({key, value});
+    req.onsuccess = ()=>res();
+    req.onerror = e=>rej(e.target.error);
+  })).catch(()=>{});
+}
+function idbPutEstimation(est) {
+  return openDB().then(db=>new Promise((res,rej)=>{
+    const tx = db.transaction('estimations','readwrite');
+    const store = tx.objectStore('estimations');
+    const req = est.id ? store.put(est) : store.add(est);
+    req.onsuccess = ()=>res(req.result);
+    req.onerror = e=>rej(e.target.error);
+  }));
+}
+
+// ── LOGIN ──────────────────────────────────────────────────
+const LS_KEY = 'cirrus_session_user';
+function doLogin() {
+  const u = document.getElementById('mLoginUser').value.trim();
+  const p = document.getElementById('mLoginPass').value;
+  idbGetAll('users').then(users => {
+    let ok = false;
+    if (users.length === 0 && u === 'Admin' && p === 'admin123') ok = true;
+    else ok = users.some(x => x.username === u && x.password === p);
+    if (ok) {
+      try { localStorage.setItem(LS_KEY, u); } catch(e){}
+      document.getElementById('loginScreen').classList.remove('show');
+      document.getElementById('app').style.display = 'flex';
+      loadAppData(u);
+    } else {
+      document.getElementById('mLoginErr').classList.add('show');
+    }
+  });
+}
+function doLogout() {
+  try { localStorage.removeItem(LS_KEY); } catch(e){}
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').classList.add('show');
+}
+
+// ── LOAD DATA ──────────────────────────────────────────────
+async function loadAppData(username) {
+  const [solid, liquid, wc, surcharge, ests, sp, gp, dc, profile] = await Promise.all([
+    idbGetAll('solid'), idbGetAll('liquid'), idbGetAll('wc'),
+    idbGetAll('surcharge'), idbGetAll('estimations'),
+    idbGetAll('salesPerson'), idbGetAll('groupingProduct'),
+    idbGetAll('dryCoating'),
+    idbConfigGet('userProfile')
+  ]);
+  masterSolid = solid; masterLiquid = liquid; masterWC = wc;
+  masterSurcharge = surcharge; estimations = ests.sort((a,b)=>(b.id||0)-(a.id||0));
+  masterSalesPerson = sp; masterGroupingProduct = gp;
+  masterDryCoating = dc.length ? dc : [
+    {id:1,type:'AD',grouping:'Gravure',    composition:'OPP/PE',    dryCoating:2.5,rSolid:0},
+    {id:2,type:'AD',grouping:'Lamination', composition:'PET/AL/PE', dryCoating:3.0,rSolid:0},
+    {id:3,type:'AC',grouping:'Extrusion',  composition:'LLDPE',     dryCoating:1.8,rSolid:0}
+  ];
+  if (profile) userProfile = profile;
+  else userProfile = { name: username };
+  populateSalesSelect();
+  populateGroupingSelect();
+  renderHomeScreen();
+  renderEstList();
+}
+
+function populateSalesSelect() {
+  const sel = document.getElementById('salesPersonSelect');
+  sel.innerHTML = '<option value="">— select —</option>';
+  masterSalesPerson.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s.name; o.textContent = s.name + (s.area ? ' · '+s.area : '');
+    sel.appendChild(o);
+  });
+}
+
+// ── SCREEN NAVIGATION ──────────────────────────────────────
+function showScreen(id, pushHistory = true) {
+  if (pushHistory && currentScreen !== id) screenHistory.push(currentScreen);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  currentScreen = id;
+  updateHeader(id);
+  updateNav(id);
+}
+function goBack() {
+  const prev = screenHistory.pop();
+  if (prev) showScreen(prev, false);
+  else showScreen('screenHome', false);
+}
+function updateHeader(id) {
+  const back = document.getElementById('hdrBack');
+  const title = document.getElementById('hdrTitle');
+  const sub = document.getElementById('hdrSub');
+  const saveBtn = document.getElementById('hdrSaveBtn');
+  const newBtn = document.getElementById('hdrNewBtn');
+  const fab = document.getElementById('saveFab');
+  back.style.display = (id !== 'screenHome') ? 'flex' : 'none';
+  saveBtn.style.display = 'none'; newBtn.style.display = 'none';
+  fab.classList.add('hidden');
+  sub.style.display = 'none';
+  if (id === 'screenHome') { title.textContent = 'Adara Field'; }
+  else if (id === 'screenList') { title.textContent = 'Estimates'; newBtn.style.display = 'flex'; }
+  else if (id === 'screenEdit') {
+    title.textContent = currentEditId ? 'Edit Estimate' : 'New Estimate';
+    sub.textContent = currentDocNumber; sub.style.display = 'block';
+    fab.classList.remove('hidden');
+  }
+  else if (id === 'screenSummary') { title.textContent = 'Cost Summary'; }
+}
+function updateNav(id) {
+  ['navHome','navList','navEdit','navSummary'].forEach(n=>document.getElementById(n)?.classList.remove('active'));
+  const navEdit = document.getElementById('navEdit');
+  if (id === 'screenHome') document.getElementById('navHome').classList.add('active');
+  else if (id === 'screenList') document.getElementById('navList').classList.add('active');
+  else if (id === 'screenEdit') { navEdit.style.display='flex'; document.getElementById('navEdit').classList.add('active'); }
+  else if (id === 'screenSummary') document.getElementById('navSummary').classList.add('active');
+  if (id !== 'screenEdit') navEdit.style.display = 'none';
+}
+
+// ── HOME ───────────────────────────────────────────────────
+function renderHomeScreen() {
+  document.getElementById('mDashTotal').textContent = estimations.length;
+  document.getElementById('mDashSolid').textContent = masterSolid.length;
+  document.getElementById('mDashLiquid').textContent = masterLiquid.length;
+  document.getElementById('mDashWC').textContent = masterWC.length;
+  const badge = document.getElementById('navBadge');
+  if (estimations.length > 0) { badge.textContent = estimations.length; badge.style.display = 'flex'; }
+  else badge.style.display = 'none';
+  // Recent 5
+  const recent = estimations.slice(0,5);
+  const el = document.getElementById('mRecentList');
+  if (recent.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fas fa-file-invoice"></i></div><div class="empty-title">No estimations yet</div><div class="empty-sub">Tap "New Estimation" to create your first one.</div></div>';
+    return;
+  }
+  el.innerHTML = recent.map(e => estRowHtml(e)).join('');
+}
+
+function estRowHtml(e) {
+  const price = e.finalPrice || e.grandTotal || 0;
+  const date = e.savedAt ? new Date(e.savedAt).toLocaleDateString('id-ID',{day:'2-digit',month:'short'}) : '—';
+  const status = e.status || 'Draft';
+  return `<div class="est-row" style="cursor:default">
+    <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0" onclick="loadAndEditEst(${e.id})">
+      <div class="est-row-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+      <div class="est-row-body">
+        <div class="est-row-name">${escHtml(e.productName||'Untitled')}</div>
+        <div class="est-row-doc">${e.docNumber||'—'} · <span class="status-pill ${status==='Submitted'?'submitted':'draft'}">${status}</span></div>
+      </div>
+    </div>
+    <div class="est-row-right" onclick="viewEstSummary(${e.id})" style="cursor:pointer;padding:4px 0 4px 12px;border-left:1px solid var(--line)">
+      <div class="est-row-price">${Math.round(price).toLocaleString()}</div>
+      <div class="est-row-date">${date}</div>
+      <div style="font-size:9px;color:var(--c-blue);margin-top:3px"><i class="fas fa-chart-bar"></i> detail</div>
+    </div>
+  </div>`;
+}
+
+// ── ESTIMATES LIST ──────────────────────────────────────────
+function renderEstList() {
+  const q = (document.getElementById('mSearchInput')?.value||'').toLowerCase();
+  let list = estimations;
+  if (currentFilter !== 'all') list = list.filter(e => e.status === currentFilter);
+  if (q) list = list.filter(e => (e.productName||'').toLowerCase().includes(q) || (e.docNumber||'').toLowerCase().includes(q));
+  const el = document.getElementById('mEstList');
+  if (list.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fas fa-search"></i></div><div class="empty-title">No results</div><div class="empty-sub">Try a different search or filter.</div></div>';
+    return;
+  }
+  el.innerHTML = list.map(e => estRowHtml(e)).join('');
+}
+function filterEstList() { renderEstList(); }
+function setFilter(el, f) {
+  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active'); currentFilter = f; renderEstList();
+}
+
+// ── NEW / LOAD ESTIMATION ───────────────────────────────────
+async function startNewEstimation() {
+  currentEditId = null;
+  await generateNewDocNumber();
+  resetForm();
+  populateGroupingSelect();
+  showScreen('screenEdit');
+  document.getElementById('navEdit').style.display = 'flex';
+}
+async function generateNewDocNumber() {
+  const yr = new Date().getFullYear();
+  const allEst = await idbGetAll('estimations');
+  let maxNum = 0;
+  allEst.forEach(e => {
+    const m = (e.docNumber||'').match(/EST-(\d{4})-(\d+)/);
+    if (m && parseInt(m[1])===yr) maxNum = Math.max(maxNum, parseInt(m[2]));
+  });
+  currentDocNumber = `EST-${yr}-${String(maxNum+1).padStart(4,'0')}`;
+}
+function resetForm() {
+  selectedSolidEntries = []; selectedLiquidIndices = []; selectedSurchargeEntries = [];
+  liquidCoatingOverrides = {}; masterMachineOp = [];
+  activeSolidSnapshot = null; activeLiquidSnapshot = null; activeSurchargeSnapshot = null;
+  solidUidCounter = 0; surchargeUidCounter = 0; formIsDirty = false;
+  ['productName','composition','qtyOrder','lebarRoll','panjangPitch','upValue','wasteFactor','currencyRate','dryCoatingWeight','runningSolid','anchorCoat','runningSolidAnchor'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('trimmingEdge').value = '20';
+  document.getElementById('jumlahWarna').value = '5';
+  document.getElementById('unitType').selectedIndex = 0;
+  document.getElementById('currencyType').value = 'USD';
+  document.getElementById('categoryTier').value = '';
+  document.getElementById('groupingProduct').value = '';
+  document.getElementById('salesPersonSelect').value = '';
+  setVAT('vat');
+  mRefreshAll();
+}
+function loadAndEditEst(id) {
+  const est = estimations.find(e => e.id === id);
+  if (!est) return;
+  currentEditId = id;
+  currentDocNumber = est.docNumber || '';
+  document.getElementById('productName').value = est.productName||'';
+  document.getElementById('composition').value = est.composition||'';
+  document.getElementById('qtyOrder').value = est.qtyOrder||'';
+  document.getElementById('unitType').value = est.unitType||'';
+  document.getElementById('lebarRoll').value = est.lebarRoll||'';
+  document.getElementById('panjangPitch').value = est.panjangPitch||'';
+  document.getElementById('upValue').value = est.upValue||'';
+  document.getElementById('trimmingEdge').value = est.trimmingEdge??20;
+  document.getElementById('wasteFactor').value = est.wasteFactor||'';
+  document.getElementById('currencyRate').value = est.currencyRate||'';
+  document.getElementById('currencyType').value = est.currencyType||'USD';
+  document.getElementById('categoryTier').value = est.categoryTier||'';
+  populateGroupingSelect();
+  document.getElementById('groupingProduct').value = est.groupingProduct||'';
+  document.getElementById('salesPersonSelect').value = est.salesPerson||'';
+  document.getElementById('dryCoatingWeight').value = est.dryCoatingWeight||0;
+  document.getElementById('runningSolid').value = est.runningSolid||0;
+  document.getElementById('anchorCoat').value = est.anchorCoat||0;
+  document.getElementById('runningSolidAnchor').value = est.runningSolidAnchor||0;
+  document.getElementById('jumlahWarna').value = est.jumlahWarna||5;
+  setVAT(est.vatMode||'vat');
+  // Restore selections
+  selectedSolidEntries = est.selectedSolidEntries ? [...est.selectedSolidEntries] : [];
+  selectedLiquidIndices = est.selectedLiquidIndices ? est.selectedLiquidIndices.map(Number) : [];
+  selectedSurchargeEntries = est.selectedSurchargeEntries ? [...est.selectedSurchargeEntries] : [];
+  liquidCoatingOverrides = est.liquidCoatingOverrides ? {...est.liquidCoatingOverrides} : {};
+  masterMachineOp = est.machineOpSnapshot ? [...est.machineOpSnapshot] : [];
+  activeSolidSnapshot = est.solidSnapshot||null;
+  activeLiquidSnapshot = est.liquidSnapshot||null;
+  activeSurchargeSnapshot = est.surchargeSnapshot||null;
+  solidUidCounter = selectedSolidEntries.reduce((mx,e)=>{ const n=parseInt((e.uid||'s0').replace('s','')); return n>mx?n:mx; },0);
+  surchargeUidCounter = selectedSurchargeEntries.reduce((mx,e)=>{ const n=parseInt((e.uid||'sc0').replace('sc','')); return n>mx?n:mx; },0);
+  formIsDirty = false;
+  showScreen('screenEdit');
+  document.getElementById('navEdit').style.display = 'flex';
+  mRefreshAll();
+}
+
+// ── FORM LOGIC ──────────────────────────────────────────────
+function toggleSection(id) {
+  const body = document.getElementById(id);
+  const chev = document.getElementById('chevron'+id.charAt(0).toUpperCase()+id.slice(1));
+  if (!body) return;
+  const isOpen = body.style.display !== 'none' && (body.classList.contains('open') || body.style.display === 'block');
+  body.style.display = isOpen ? 'none' : 'block';
+  body.classList.toggle('open', !isOpen);
+  if (chev) { chev.style.transform = isOpen ? '' : 'rotate(180deg)'; chev.classList.toggle('open',!isOpen); }
+}
+function setVAT(mode) {
+  currentVatMode = mode;
+  document.getElementById('vatModeHidden').value = mode;
+  document.getElementById('vatOptVAT').classList.toggle('active', mode==='vat');
+  document.getElementById('vatOptNOVAT').classList.toggle('active', mode==='novat');
+  const lbl = document.getElementById('mVatModeLabel');
+  if (lbl) lbl.textContent = mode==='vat' ? '(incl. VAT 11%)' : '(excl. VAT)';
+  mMarkDirty();
+}
+function mMarkDirty() { formIsDirty = true; mRefreshAll(); }
+
+// ── SNAPSHOT / CALC ────────────────────────────────────────
+function buildActiveSnapshots() {
+  const solidItems = selectedSolidEntries.map(entry => {
+    if (activeSolidSnapshot) { const s = activeSolidSnapshot.find(x=>x.uid===entry.uid); if(s) return s; }
+    const m = masterSolid.find(x=>Number(x.id)===Number(entry.masterId));
+    return m ? {...m, uid: entry.uid, masterId: Number(entry.masterId)} : null;
+  }).filter(Boolean);
+  const liquidItems = selectedLiquidIndices.map(rawId => {
+    const numId = Number(rawId);
+    if (activeLiquidSnapshot) { const s = activeLiquidSnapshot.find(x=>Number(x.id)===numId); if(s){ const co=liquidCoatingOverrides[numId]; return co!==undefined?{...s,customCoating:co}:s; }}
+    const m = masterLiquid.find(x=>Number(x.id)===numId);
+    if (!m) return null;
+    const co = liquidCoatingOverrides[numId];
+    return {...m, id:numId, customCoating: co!==undefined?co:0};
+  }).filter(Boolean);
+  const surchargeItems = selectedSurchargeEntries.map(entry => {
+    if (activeSurchargeSnapshot) { const s = activeSurchargeSnapshot.find(x=>x.uid===entry.uid); if(s) return s; }
+    const m = masterSurcharge.find(x=>Number(x.id)===Number(entry.masterId));
+    return m ? {...m, uid:entry.uid, masterId:Number(entry.masterId)} : null;
+  }).filter(Boolean);
+  return {solidItems, liquidItems, surchargeItems};
+}
+
+function gv(id) { return parseFloat(document.getElementById(id)?.value)||0; }
+function gvs(id) { return document.getElementById(id)?.value||''; }
+
+function mCalcMeterage() {
+  const up=gv('upValue'), panjang=gv('panjangPitch'), qty=gv('qtyOrder');
+  const lebar=gv('lebarRoll'), waste=gv('wasteFactor'), trim=gv('trimmingEdge');
+  const unit = gvs('unitType');
+  if (!up||!panjang||!qty||!lebar||!unit) return {netMeter:0,qtyMeter:0,sqMeter:0};
+  let netMeter = unit==='Roll'?(qty*panjang)/up : unit==='PBT'?(qty*(lebar/1000))/up : (qty*(panjang/1000))/up;
+  let qtyMeter = netMeter*(1+waste/100);
+  let sqMeter  = qtyMeter*((lebar*up+trim)/1000);
+  return {netMeter,qtyMeter,sqMeter};
+}
+
+function mCalcSolidTotal(qtyMeter, widthMm, rate) {
+  const {solidItems} = buildActiveSnapshots();
+  let totalResinKg=0;
+  solidItems.forEach(m=>{ if((m.type||'').toLowerCase()==='resin') totalResinKg+=qtyMeter*(widthMm/1000)*m.density*(m.thickness/1000); });
+  let total=0;
+  solidItems.forEach(m=>{
+    let price=m.price; if(['USD','EUR','SGD'].includes(m.currency)) price=m.price*rate;
+    const mType=(m.type||'').toLowerCase();
+    const qty=mType==='masterbatch'?totalResinKg*(m.thickness||0)/100:qtyMeter*(widthMm/1000)*m.density*(m.thickness/1000);
+    total+=qty*price;
+  });
+  return total;
+}
+function mCalcLiquidTotal(sqMeter, rate) {
+  const {liquidItems} = buildActiveSnapshots();
+  let total=0;
+  liquidItems.forEach(m=>{
+    const co=m.customCoating||0;
+    let qty;
+    if(m.type==='tinta') qty=sqMeter*(4.2/1000)*co/100;
+    else if(m.type==='adhesive'||m.type==='Solvent Adhesive') {
+      const dry=gv('dryCoatingWeight'), rs=gv('runningSolid')||1;
+      qty=sqMeter*co*dry/rs/1000;
+    } else qty=sqMeter*(co/100)*(4.2/1000);
+    const price=m.currency==='IDR'?m.price:m.price*rate;
+    total+=qty*price;
+  });
+  return total;
+}
+function mCalcSurchargeTotal(rate) {
+  const {surchargeItems} = buildActiveSnapshots();
+  const lebar=gv('lebarRoll'), qty=gv('qtyOrder'), unit=gvs('unitType');
+  let total=0;
+  surchargeItems.forEach(m=>{
+    let price=m.price; if(['USD','EUR','SGD'].includes(m.currency)) price*=rate;
+    const q=unit==='Roll'?(lebar/m.dimension)*qty : unit==='PCS'?qty/m.dimension : 0;
+    total+=q*price;
+  });
+  return total;
+}
+function mCalcMachineTotal(qtyMeter) {
+  let total=0;
+  masterMachineOp.forEach(m=>{
+    if(m.status==='Active'&&m.target>0) total+=(qtyMeter/m.target)*(m.costMinute||0);
+  });
+  return total;
+}
+function _mGetMargin() {
+  const cat=gvs('categoryTier');
+  if(cat==='Sophisticated') return 0.25;
+  if(cat==='High-End') return 0.20;
+  if(cat==='Mid-End') return 0.15;
+  if(cat==='Low-End') return 0.10;
+  return 0.08;
+}
+
+function mRefreshAll() {
+  const {netMeter,qtyMeter,sqMeter} = mCalcMeterage();
+  const rate = gv('currencyRate')||1;
+  const widthMm = gv('lebarRoll')*gv('upValue')+gv('trimmingEdge');
+  const matTotal = mCalcSolidTotal(qtyMeter,widthMm,rate)+mCalcLiquidTotal(sqMeter,rate)+mCalcSurchargeTotal(rate);
+  const opTotal  = mCalcMachineTotal(qtyMeter);
+  const grand    = matTotal+opTotal;
+  const margin   = _mGetMargin();
+  const vat      = currentVatMode==='vat'?1.11:1;
+  const final    = grand*(1+margin)*vat;
+
+  document.getElementById('mStatNet').textContent  = netMeter.toFixed(2);
+  document.getElementById('mStatQty').textContent  = qtyMeter.toFixed(2);
+  document.getElementById('mStatSqm').textContent  = sqMeter.toFixed(2);
+  document.getElementById('mCostMat').textContent   = Math.round(matTotal).toLocaleString();
+  document.getElementById('mCostOp').textContent    = Math.round(opTotal).toLocaleString();
+  document.getElementById('mCostGrand').textContent = Math.round(grand).toLocaleString();
+  document.getElementById('mCostFinal').textContent = Math.round(final).toLocaleString();
+  const _unit = gvs('unitType') || 'UOM';
+  const _qty  = gv('qtyOrder') || 1;
+  document.getElementById('mCostUomLabel').textContent = _unit;
+  document.getElementById('mCostPerUom').textContent   = Math.round(final / _qty).toLocaleString();
+
+  renderMaterialChips();
+  renderLiquidCoatings();
+  renderMachineChips();
+}
+
+// ── RENDER CHIPS ────────────────────────────────────────────
+function matTypeClass(type) {
+  const t=(type||'').toLowerCase();
+  if(t==='film') return 'film'; if(t==='layer') return 'layer'; if(t==='resin') return 'resin';
+  if(t==='masterbatch') return 'masterbatch'; if(t==='tinta') return 'tinta';
+  if(t==='adhesive'||t==='solvent adhesive') return 'adhesive'; return '';
+}
+function renderMaterialChips() {
+  const solidEl = document.getElementById('mSolidChips');
+  const {solidItems} = buildActiveSnapshots();
+  if (solidItems.length===0) { solidEl.innerHTML=''; }
+  else solidEl.innerHTML = solidItems.map(m=>`<div class="mat-chip ${matTypeClass(m.type)}">${escHtml(m.name)} <button onclick="removeSolidEntryM('${m.uid}')"><i class="fas fa-times"></i></button></div>`).join('');
+
+  const surEl = document.getElementById('mSurchargeChips');
+  const {surchargeItems} = buildActiveSnapshots();
+  if (surchargeItems.length===0) { surEl.innerHTML=''; }
+  else surEl.innerHTML = surchargeItems.map(m=>`<div class="mat-chip">${escHtml(m.name)} <button onclick="removeSurchargeEntryM('${m.uid}')"><i class="fas fa-times"></i></button></div>`).join('');
+}
+function renderLiquidCoatings() {
+  const {liquidItems} = buildActiveSnapshots();
+  const el = document.getElementById('mLiquidCoatings');
+  if (liquidItems.length===0) { el.innerHTML=''; return; }
+  el.innerHTML = liquidItems.map(m => {
+    const numId=Number(m.id);
+    const co=liquidCoatingOverrides[numId]!==undefined?liquidCoatingOverrides[numId]:(m.customCoating||0);
+    const isReadonly = m.type==='Solvent Tinta';
+    return `<div class="liq-coating-row">
+      <div class="mat-item-left">
+        <div class="liq-coating-name">${escHtml(m.name)}</div>
+        <div class="liq-coating-type">${escHtml(m.type)} · <button onclick="removeLiquidM(${numId})" style="background:none;border:none;color:var(--c-red);font-size:10px;cursor:pointer;padding:0">remove</button></div>
+      </div>
+      ${isReadonly
+        ? `<input class="liq-coating-input" type="number" value="${co.toFixed(2)}" readonly style="opacity:0.5">`
+        : `<input class="liq-coating-input" type="number" value="${co.toFixed(2)}" step="0.01" oninput="updateLiquidCoatingM(${numId},this.value)">`
+      }
+      <span class="liq-coating-unit">%</span>
+    </div>`;
+  }).join('');
+}
+function renderMachineChips() {
+  const el = document.getElementById('mMachineChips');
+  if (masterMachineOp.length===0) { el.innerHTML=''; return; }
+  el.innerHTML = masterMachineOp.map((m,i)=>`<div class="mat-chip">${escHtml(m.name)} <button onclick="removeMachineM(${i})"><i class="fas fa-times"></i></button></div>`).join('');
+}
+
+// ── MATERIAL REMOVE ─────────────────────────────────────────
+function removeSolidEntryM(uid) { selectedSolidEntries=selectedSolidEntries.filter(e=>e.uid!==uid); activeSolidSnapshot=null; mMarkDirty(); }
+function removeLiquidM(id) { const n=Number(id); selectedLiquidIndices=selectedLiquidIndices.filter(x=>Number(x)!==n); activeLiquidSnapshot=null; mMarkDirty(); }
+function removeSurchargeEntryM(uid) { selectedSurchargeEntries=selectedSurchargeEntries.filter(e=>e.uid!==uid); activeSurchargeSnapshot=null; mMarkDirty(); }
+function removeMachineM(idx) { masterMachineOp.splice(idx,1); mMarkDirty(); }
+function updateLiquidCoatingM(id,val) { liquidCoatingOverrides[Number(id)]=parseFloat(val)||0; activeLiquidSnapshot=null; mMarkDirty(); }
+
+// ── MATERIAL SHEET ──────────────────────────────────────────
+function openSheet(type) {
+  currentSheetType = type;
+  document.getElementById('sheetSearch').value = '';
+  const applyBtn = document.getElementById('sheetApplyBtn');
+  const titles = {solid:'Solid Materials',liquid:'Liquid Materials',surcharge:'Surcharge Materials',machine:'Work Centre'};
+  const subs   = {solid:'Tap + to add each material',liquid:'Select materials then Apply',surcharge:'Tap + to add each material',machine:'Select machines then Apply'};
+  document.getElementById('sheetTitle').textContent = titles[type]||type;
+  document.getElementById('sheetSub').textContent = subs[type]||'';
+  applyBtn.style.display = (type==='liquid'||type==='machine') ? 'flex' : 'none';
+  if (type==='liquid') tempLiquidSelection = [...selectedLiquidIndices];
+  if (type==='machine') tempMachineSelection = [];
+  buildSheetItems(type);
+  document.getElementById('matModal').classList.add('show');
+}
+function buildSheetItems(type) {
+  let items = [];
+  if (type==='solid') items = [...masterSolid].sort((a,b)=>(a.name||'').localeCompare(b.name||'','id'));
+  else if (type==='liquid') items = [...masterLiquid].sort((a,b)=>(a.name||'').localeCompare(b.name||'','id'));
+  else if (type==='surcharge') items = [...masterSurcharge];
+  else if (type==='machine') items = [...masterWC];
+  sheetAllItems = items;
+  renderSheetItems(items);
+}
+function filterSheetItems() {
+  const q = document.getElementById('sheetSearch').value.toLowerCase();
+  renderSheetItems(q ? sheetAllItems.filter(m=>(m.name||'').toLowerCase().includes(q)) : sheetAllItems);
+}
+function renderSheetItems(items) {
+  const type = currentSheetType;
+  const el = document.getElementById('sheetBody');
+  if (items.length===0) { el.innerHTML='<div class="empty-state" style="padding:30px 0"><div class="empty-icon"><i class="fas fa-search"></i></div><div class="empty-title">No items found</div></div>'; return; }
+  el.innerHTML = items.map((m,i) => {
+    const id = Number(m.id!==undefined?m.id:i);
+    const prefix = (m.matCode||'').replace(/\d+$/,'');
+    const badgeHtml = m.matCode ? `<span class="mat-item-badge ${prefix}">${m.matCode}</span>` : '';
+    if (type==='solid') {
+      const cnt = selectedSolidEntries.filter(e=>Number(e.masterId)===id).length;
+      return `<div class="mat-item">
+        <div class="mat-item-left">
+          <div class="mat-item-name">${badgeHtml}${escHtml(m.name||'')}${cnt>0?` <span style="color:var(--c-blue);font-size:10px;font-weight:700">(${cnt}x)</span>`:''}</div>
+          <div class="mat-item-meta">${m.type} · ${m.density} g/cm³ · ${m.thickness} µm · ${(m.price||0).toLocaleString()} ${m.currency}</div>
+        </div>
+        <button class="mat-item-add" onclick="addSolidM(${id})"><i class="fas fa-plus"></i></button>
+      </div>`;
+    } else if (type==='liquid') {
+      const sel = tempLiquidSelection.some(x=>Number(x)===id);
+      return `<div class="mat-item" onclick="toggleLiquidM(${id})">
+        <div class="mat-item-left">
+          <div class="mat-item-name">${badgeHtml}${escHtml(m.name||'')}</div>
+          <div class="mat-item-meta">${m.type} · ${(m.price||0).toLocaleString()} ${m.currency}</div>
+        </div>
+        <div class="mat-item-chk ${sel?'checked':''}" id="lchk${id}"></div>
+      </div>`;
+    } else if (type==='surcharge') {
+      const cnt = selectedSurchargeEntries.filter(e=>Number(e.masterId)===id).length;
+      return `<div class="mat-item">
+        <div class="mat-item-left">
+          <div class="mat-item-name">${badgeHtml}${escHtml(m.name||'')}${cnt>0?` <span style="color:var(--c-blue);font-size:10px;font-weight:700">(${cnt}x)</span>`:''}</div>
+          <div class="mat-item-meta">${m.type} · dim:${m.dimension} · ${(m.price||0).toLocaleString()} ${m.currency}</div>
+        </div>
+        <button class="mat-item-add" onclick="addSurchargeM(${id})"><i class="fas fa-plus"></i></button>
+      </div>`;
+    } else if (type==='machine') {
+      const sel = tempMachineSelection.includes(i);
+      const exists = masterMachineOp.some(op=>op.name===m.name);
+      return `<div class="mat-item" onclick="toggleMachineM(${i})">
+        <div class="mat-item-left">
+          <div class="mat-item-name">${escHtml(m.name||'')}${exists?' <span style="color:var(--c-green);font-size:9px">●</span>':''}</div>
+          <div class="mat-item-meta">${m.grouping} · ${m.target} ${m.baseUnit} · ${(m.costMinute||0).toLocaleString()} IDR/min</div>
+        </div>
+        <div class="mat-item-chk ${sel?'checked':''}" id="mchk${i}"></div>
+      </div>`;
+    }
+  }).join('');
+}
+function addSolidM(id) {
+  solidUidCounter++;
+  selectedSolidEntries.push({masterId:Number(id), uid:'s'+solidUidCounter});
+  activeSolidSnapshot=null; mMarkDirty();
+  renderSheetItems(sheetAllItems); // refresh count
+}
+function addSurchargeM(id) {
+  surchargeUidCounter++;
+  selectedSurchargeEntries.push({masterId:Number(id), uid:'sc'+surchargeUidCounter});
+  activeSurchargeSnapshot=null; mMarkDirty();
+  renderSheetItems(sheetAllItems);
+}
+function toggleLiquidM(id) {
+  const n=Number(id);
+  if (tempLiquidSelection.some(x=>Number(x)===n)) tempLiquidSelection=tempLiquidSelection.filter(x=>Number(x)!==n);
+  else tempLiquidSelection.push(n);
+  const chk=document.getElementById('lchk'+n);
+  if(chk) chk.classList.toggle('checked', tempLiquidSelection.some(x=>Number(x)===n));
+}
+function toggleMachineM(idx) {
+  if (tempMachineSelection.includes(idx)) tempMachineSelection=tempMachineSelection.filter(i=>i!==idx);
+  else tempMachineSelection.push(idx);
+  const chk=document.getElementById('mchk'+idx);
+  if(chk) chk.classList.toggle('checked', tempMachineSelection.includes(idx));
+}
+function applySheet() {
+  if (currentSheetType==='liquid') {
+    selectedLiquidIndices = tempLiquidSelection.map(Number);
+    activeLiquidSnapshot=null; mMarkDirty();
+  } else if (currentSheetType==='machine') {
+    tempMachineSelection.forEach(idx=>{
+      const m=masterWC[idx];
+      if(m&&!masterMachineOp.some(op=>op.name===m.name)) masterMachineOp.push({...m});
+    });
+    mMarkDirty();
+  }
+  closeSheet();
+}
+function closeSheet() { document.getElementById('matModal').classList.remove('show'); }
+
+// ── SAVE ───────────────────────────────────────────────────
+async function saveCurrentEstimation() {
+  const productName = document.getElementById('productName').value.trim();
+  if (!productName) { showToast('Product Name is required','error'); return; }
+  const qtyOrder = gv('qtyOrder');
+  if (!qtyOrder) { showToast('Qty Order is required','error'); return; }
+
+  const {solidItems:solidSnap, liquidItems:liquidSnap, surchargeItems:surchargeSnap} = buildActiveSnapshots();
+  const machineSnap = masterMachineOp.map(m=>({...m}));
+  const {netMeter,qtyMeter,sqMeter} = mCalcMeterage();
+  const rate = gv('currencyRate')||1;
+  const widthMm = gv('lebarRoll')*gv('upValue')+gv('trimmingEdge');
+  const matTotal = mCalcSolidTotal(qtyMeter,widthMm,rate)+mCalcLiquidTotal(sqMeter,rate)+mCalcSurchargeTotal(rate);
+  const opTotal  = mCalcMachineTotal(qtyMeter);
+  const grand    = matTotal+opTotal;
+  const margin   = _mGetMargin();
+  const vat      = currentVatMode==='vat'?1.11:1;
+  const final    = grand*(1+margin)*vat;
+
+  const est = {
+    ...(currentEditId?{id:currentEditId}:{}),
+    docNumber:    currentDocNumber,
+    createdDate:  new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}),
+    savedAt:      new Date().toISOString(),
+    preparedBy:   userProfile.name||'Field User',
+    status:       'Submitted',
+    productName,
+    composition:  gvs('composition'),
+    categoryTier: gvs('categoryTier'),
+    groupingProduct: gvs('groupingProduct'),
+    salesPerson:  gvs('salesPersonSelect'),
+    lebarRoll:    gv('lebarRoll'), panjangPitch: gv('panjangPitch'),
+    qtyOrder, unitType: gvs('unitType'),
+    upValue:      gv('upValue'), trimmingEdge: gv('trimmingEdge'),
+    wasteFactor:  gv('wasteFactor'),
+    dryCoatingWeight: gv('dryCoatingWeight'), runningSolid: gv('runningSolid'),
+    anchorCoat:   gv('anchorCoat'), runningSolidAnchor: gv('runningSolidAnchor'),
+    jumlahWarna:  parseInt(gvs('jumlahWarna'))||5,
+    currencyType: gvs('currencyType'), currencyRate: rate,
+    vatMode:      currentVatMode,
+    selectedSolidEntries:    [...selectedSolidEntries],
+    selectedLiquidIndices:   [...selectedLiquidIndices],
+    selectedSurchargeEntries:[...selectedSurchargeEntries],
+    liquidCoatingOverrides:  {...liquidCoatingOverrides},
+    solidSnapshot: solidSnap, liquidSnapshot: liquidSnap,
+    surchargeSnapshot: surchargeSnap, machineOpSnapshot: machineSnap,
+    netMeter, qtyMeter, sqMeter,
+    materialTotal: matTotal, operationalTotal: opTotal, grandTotal: grand,
+    margin, finalPrice: final, totalCost: grand,
+    pricePerRoll: final / qtyOrder
+  };
+
+  const assignedId = await idbPutEstimation(est);
+  if (!currentEditId) {
+    est.id = assignedId; currentEditId = assignedId;
+    estimations.unshift(est);
+  } else {
+    const idx = estimations.findIndex(e=>e.id===currentEditId);
+    if (idx!==-1) estimations[idx] = est;
+  }
+  activeSolidSnapshot = solidSnap.length>0?[...solidSnap]:null;
+  activeLiquidSnapshot = liquidSnap.length>0?[...liquidSnap]:null;
+  activeSurchargeSnapshot = surchargeSnap.length>0?[...surchargeSnap]:null;
+  formIsDirty = false;
+  renderHomeScreen(); renderEstList();
+  showToast('Saved — '+currentDocNumber,'success');
+  buildSummary(est);
+}
+
+// ── SUMMARY ────────────────────────────────────────────────
+function showSummary() {
+  if (currentEditId) {
+    const est = estimations.find(e=>e.id===currentEditId);
+    if (est) { buildSummary(est); showScreen('screenSummary'); return; }
+  }
+  showSummaryOfLast();
+}
+function showSummaryOfLast() {
+  if (estimations.length===0) { showToast('No estimation yet','error'); return; }
+  buildSummary(estimations[0]);
+  showScreen('screenSummary');
+}
+function buildSummary(est) {
+  if (!est) return;
+  const mat = est.materialTotal||0, op = est.operationalTotal||0;
+  const grand = est.grandTotal||0, final = est.finalPrice||0;
+  const pct = v => grand>0?((v/grand)*100).toFixed(1)+'%':'—';
+  const {solidItems=[], liquidItems=[], surchargeItems=[]} = {
+    solidItems: est.solidSnapshot||[], liquidItems: est.liquidSnapshot||[], surchargeItems: est.surchargeSnapshot||[]
+  };
+  const rate = est.currencyRate||1;
+  const up = est.upValue||1, lebar=est.lebarRoll||0, trim=est.trimmingEdge||0;
+  const qtyMeter=est.qtyMeter||0, widthMm=lebar*up+trim;
+
+  // solid totals per item
+  let totalResinKg=0;
+  solidItems.forEach(m=>{ if((m.type||'').toLowerCase()==='resin') totalResinKg+=qtyMeter*(widthMm/1000)*m.density*(m.thickness/1000); });
+
+  const solidRows = solidItems.map(m=>{
+    let price=m.price; if(['USD','EUR','SGD'].includes(m.currency)) price*=rate;
+    const mType=(m.type||'').toLowerCase();
+    const qty=mType==='masterbatch'?totalResinKg*(m.thickness||0)/100:qtyMeter*(widthMm/1000)*m.density*(m.thickness/1000);
+    const amt=qty*price;
+    return `<div class="sum-mat-row"><span class="sum-mat-name">${escHtml(m.name)}</span><span class="sum-mat-amt">${Math.round(amt).toLocaleString()}</span></div>`;
+  }).join('');
+
+  const liqRows = liquidItems.map(m=>{
+    const co=m.customCoating||0;
+    let qty; if(m.type==='tinta') qty=(est.sqMeter||0)*(4.2/1000)*co/100;
+    else if(m.type==='adhesive'||m.type==='Solvent Adhesive') { const dry=est.dryCoatingWeight||0,rs=est.runningSolid||1; qty=(est.sqMeter||0)*co*dry/rs/1000; }
+    else qty=(est.sqMeter||0)*(co/100)*(4.2/1000);
+    const price=m.currency==='IDR'?m.price:m.price*rate;
+    return `<div class="sum-mat-row"><span class="sum-mat-name">${escHtml(m.name)}</span><span class="sum-mat-amt">${Math.round(qty*price).toLocaleString()}</span></div>`;
+  }).join('');
+
+  const surRows = surchargeItems.map(m=>{
+    let price=m.price; if(['USD','EUR','SGD'].includes(m.currency)) price*=rate;
+    const q=est.unitType==='Roll'?(lebar/m.dimension)*(est.qtyOrder||0):est.unitType==='PCS'?(est.qtyOrder||0)/m.dimension:0;
+    return `<div class="sum-mat-row"><span class="sum-mat-name">${escHtml(m.name)}</span><span class="sum-mat-amt">${Math.round(q*price).toLocaleString()}</span></div>`;
+  }).join('');
+
+  const machRows = (est.machineOpSnapshot||[]).map(m=>{
+    const workMins=m.status==='Active'&&m.target>0?qtyMeter/m.target:0;
+    const cost=workMins*(m.costMinute||0);
+    return `<div class="sum-mat-row"><span class="sum-mat-name">${escHtml(m.name)}</span><span class="sum-mat-amt">${m.status==='Active'?Math.round(cost).toLocaleString():'—'}</span></div>`;
+  }).join('');
+
+  document.getElementById('mSummaryWrap').innerHTML = `
+    <div class="sum-doc">
+      <div class="sum-doc-row"><span class="sum-doc-lbl">Doc Number</span><span class="sum-doc-val">${est.docNumber||'—'}</span></div>
+      <div class="sum-doc-row"><span class="sum-doc-lbl">Product</span><span class="sum-doc-val">${escHtml(est.productName||'—')}</span></div>
+      <div class="sum-doc-row"><span class="sum-doc-lbl">Composition</span><span class="sum-doc-val">${escHtml(est.composition||'—')}</span></div>
+      <div class="sum-doc-row"><span class="sum-doc-lbl">Qty Order</span><span class="sum-doc-val">${(est.qtyOrder||0).toLocaleString()} ${est.unitType||''}</span></div>
+      <div class="sum-doc-row"><span class="sum-doc-lbl">Prepared by</span><span class="sum-doc-val">${escHtml(est.preparedBy||'—')}</span></div>
+      <div class="sum-doc-row"><span class="sum-doc-lbl">Status</span><span class="sum-doc-val"><span class="status-pill ${est.status==='Submitted'?'submitted':'draft'}">${est.status||'Draft'}</span></span></div>
+    </div>
+    <div class="sum-kpi">
+      <div class="sum-kpi-card"><div class="sum-kpi-lbl">Net Meter</div><div class="sum-kpi-val">${(est.netMeter||0).toFixed(1)}</div></div>
+      <div class="sum-kpi-card"><div class="sum-kpi-lbl">Sq. Meter</div><div class="sum-kpi-val">${(est.sqMeter||0).toFixed(1)}</div></div>
+      <div class="sum-kpi-card"><div class="sum-kpi-lbl">Material Cost</div><div class="sum-kpi-val">${Math.round(mat).toLocaleString()}</div></div>
+      <div class="sum-kpi-card"><div class="sum-kpi-lbl">Op. Cost</div><div class="sum-kpi-val">${Math.round(op).toLocaleString()}</div></div>
+      <div class="sum-kpi-card accent"><div class="sum-kpi-lbl">Grand Total</div><div class="sum-kpi-val">${Math.round(grand).toLocaleString()}</div></div>
+      <div class="sum-kpi-card accent"><div class="sum-kpi-lbl">Final Price</div><div class="sum-kpi-val">${Math.round(final).toLocaleString()}</div></div>
+    </div>
+    ${solidRows?`<div class="sum-section"><div class="sum-section-hdr"><i class="fas fa-cubes"></i> Solid Materials</div>${solidRows}</div>`:''}
+    ${liqRows?`<div class="sum-section"><div class="sum-section-hdr"><i class="fas fa-tint"></i> Liquid Materials</div>${liqRows}</div>`:''}
+    ${surRows?`<div class="sum-section"><div class="sum-section-hdr"><i class="fas fa-box-open"></i> Surcharge</div>${surRows}</div>`:''}
+    ${machRows?`<div class="sum-section"><div class="sum-section-hdr"><i class="fas fa-cog"></i> Machine / Work Centre</div>${machRows}</div>`:''}
+  `;
+}
+
+// ── TOAST ──────────────────────────────────────────────────
+function showToast(msg, type='success') {
+  const t=document.getElementById('toast');
+  const icon=t.querySelector('.toast-icon');
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = `toast ${type}`;
+  icon.className = `fas ${type==='success'?'fa-check-circle':'fa-exclamation-circle'} toast-icon`;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+// ── UTIL ───────────────────────────────────────────────────
+// ── IMPORT DATA MODAL ─────────────────────────────────────
+let _importData = null;
+let _importMode = 'replace';
+
+const IMPORT_STORES = {
+  solid:            { label: 'Solid Materials Master',    stateVar: 'masterSolid' },
+  liquid:           { label: 'Liquid Materials Master',   stateVar: 'masterLiquid' },
+  surcharge:        { label: 'Surcharge Materials',       stateVar: 'masterSurcharge' },
+  wc:               { label: 'Work Centre / Machine',     stateVar: 'masterWC' },
+  dryCoating:       { label: 'Dry Coating Table',         stateVar: 'masterDryCoating' },
+  salesPerson:      { label: 'Sales Person',              stateVar: 'masterSalesPerson' },
+  groupingProduct:  { label: 'Grouping Product',          stateVar: 'masterGroupingProduct' },
+  estimations:      { label: 'Saved Estimations',         stateVar: 'estimations' },
+  appointments:     { label: 'Appointments / Agenda',     stateVar: null },
+};
+
+function openImportModal() {
+  _importData = null;
+  document.getElementById('importFileInput').value = '';
+  document.getElementById('importFileName').textContent = '';
+  document.getElementById('importPreviewWrap').style.display = 'none';
+  document.getElementById('importResult').style.display = 'none';
+  document.getElementById('importModal').classList.add('show');
+}
+function closeImportModal() {
+  document.getElementById('importModal').classList.remove('show');
+}
+function setImportMode(mode) {
+  _importMode = mode;
+  document.getElementById('importModeReplace').classList.toggle('active', mode === 'replace');
+  document.getElementById('importModeMerge').classList.toggle('active', mode === 'merge');
+}
+
+function previewImport() {
+  const file = document.getElementById('importFileInput').files[0];
+  if (!file) return;
+  document.getElementById('importFileName').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      _importData = JSON.parse(e.target.result);
+      // Validate it's an Adara backup
+      if (!_importData._meta) {
+        showToast('File bukan backup Adara yang valid', 'error');
+        return;
+      }
+      // Build checkboxes for available stores
+      const wrap = document.getElementById('importCheckboxes');
+      wrap.innerHTML = '';
+      let found = 0;
+      Object.entries(IMPORT_STORES).forEach(([store, info]) => {
+        if (_importData[store] && Array.isArray(_importData[store])) {
+          const count = _importData[store].length;
+          found++;
+          wrap.innerHTML += `
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-sm)">
+              <input type="checkbox" id="imp_${store}" checked style="width:16px;height:16px;accent-color:var(--c-blue)">
+              <div style="flex:1">
+                <div style="font-size:12px;font-weight:600;color:var(--txt)">${info.label}</div>
+                <div style="font-size:10px;color:var(--txt3)">${count} record${count>1?'s':''}</div>
+              </div>
+              <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--c-blue)">${count}</span>
+            </label>`;
+        }
+      });
+      if (found === 0) {
+        showToast('Tidak ada data yang bisa diimport', 'error');
+        return;
+      }
+      // Show meta info
+      const meta = _importData._meta;
+      wrap.innerHTML += `
+        <div style="margin-top:4px;padding:8px 10px;background:var(--bg3);border-radius:var(--r-sm);font-size:10px;color:var(--txt3)">
+          <i class="fas fa-info-circle"></i> Backup dari: <strong style="color:var(--txt)">${meta.exportedBy||'—'}</strong> · ${meta.exportedAt ? new Date(meta.exportedAt).toLocaleString('id-ID') : '—'}
+        </div>`;
+      document.getElementById('importPreviewWrap').style.display = 'block';
+      document.getElementById('importResult').style.display = 'none';
+    } catch(err) {
+      showToast('File tidak valid: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function doImport() {
+  if (!_importData) return;
+  let imported = 0, total = 0;
+  const errors = [];
+
+  for (const [store, info] of Object.entries(IMPORT_STORES)) {
+    const chk = document.getElementById('imp_' + store);
+    if (!chk || !chk.checked) continue;
+    if (!_importData[store] || !Array.isArray(_importData[store])) continue;
+
+    const rows = _importData[store];
+    total += rows.length;
+
+    try {
+      await openDB().then(db => new Promise((res, rej) => {
+        const tx = db.transaction(store, 'readwrite');
+        const st = tx.objectStore(store);
+
+        if (_importMode === 'replace') {
+          st.clear();
+        }
+
+        rows.forEach(row => {
+          try {
+            // Remove id for merge mode to avoid conflicts on estimations
+            if (_importMode === 'merge' && store === 'estimations') {
+              const { id, ...rowNoId } = row;
+              st.add(rowNoId);
+            } else {
+              st.put(row);
+            }
+            imported++;
+          } catch(e) {}
+        });
+
+        tx.oncomplete = () => res();
+        tx.onerror    = e => rej(e.target.error);
+      }));
+
+      // Update in-memory state
+      if (info.stateVar && window[info.stateVar] !== undefined) {
+        if (_importMode === 'replace') {
+          window[info.stateVar] = [...rows];
+        } else {
+          window[info.stateVar] = [...(window[info.stateVar]||[]), ...rows];
+        }
+      }
+    } catch(err) {
+      errors.push(store + ': ' + err.message);
+    }
+  }
+
+  // Refresh UI
+  estimations = estimations.sort((a,b) => (b.id||0) - (a.id||0));
+  populateSalesSelect();
+  populateGroupingSelect();
+  renderHomeScreen();
+  renderEstList();
+
+  // Show result
+  const msg = `Berhasil import ${imported} records dari ${total} total.` +
+    (errors.length ? ` (${errors.length} error)` : '');
+  document.getElementById('importResultMsg').textContent = msg;
+  document.getElementById('importResult').style.display = 'block';
+  document.getElementById('importPreviewWrap').style.display = 'none';
+  showToast('Import selesai!', 'success');
+}
+
+// ── DRY COATING MODAL ─────────────────────────────────────
+function openDryCoatingModal() {
+  document.getElementById('dcSearch').value = '';
+  clearDCForm();
+  renderDCTable();
+  document.getElementById('dryCoatingModal').classList.add('show');
+}
+function closeDryCoatingModal() {
+  document.getElementById('dryCoatingModal').classList.remove('show');
+}
+function renderDCTable() {
+  const q = (document.getElementById('dcSearch').value||'').toLowerCase();
+  const items = q
+    ? masterDryCoating.filter(d =>
+        (d.composition||'').toLowerCase().includes(q) ||
+        (d.grouping||'').toLowerCase().includes(q) ||
+        (d.type||'').toLowerCase().includes(q))
+    : masterDryCoating;
+
+  const wrap = document.getElementById('dcTableWrap');
+  if (items.length === 0) {
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fas fa-search"></i></div><div class="empty-title">No rows found</div></div>';
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead>
+        <tr style="background:var(--bg3);position:sticky;top:0;z-index:2">
+          <th style="padding:7px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:0.4px;color:var(--txt3);border-bottom:1px solid var(--line);font-weight:700">Type</th>
+          <th style="padding:7px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:0.4px;color:var(--txt3);border-bottom:1px solid var(--line);font-weight:700">Grouping</th>
+          <th style="padding:7px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:0.4px;color:var(--txt3);border-bottom:1px solid var(--line);font-weight:700">Composition</th>
+          <th style="padding:7px 10px;text-align:right;font-size:9px;text-transform:uppercase;letter-spacing:0.4px;color:var(--txt3);border-bottom:1px solid var(--line);font-weight:700">Dry</th>
+          <th style="padding:7px 10px;text-align:right;font-size:9px;text-transform:uppercase;letter-spacing:0.4px;color:var(--txt3);border-bottom:1px solid var(--line);font-weight:700">R.Solid</th>
+          <th style="padding:7px 6px;text-align:center;font-size:9px;border-bottom:1px solid var(--line)"></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${items.map((d, i) => {
+          const realIdx = masterDryCoating.indexOf(d);
+          return `<tr style="border-bottom:1px solid var(--line)" onclick="selectDCRow(${realIdx})">
+            <td style="padding:8px 10px">
+              <span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;background:${d.type==='AD'?'var(--c-blue-lt)':'var(--c-green-lt)'};color:${d.type==='AD'?'var(--c-blue)':'var(--c-green)'};border:1px solid ${d.type==='AD'?'var(--c-blue-bdr)':'rgba(16,185,129,.3)'}">${d.type}</span>
+            </td>
+            <td style="padding:8px 10px;color:var(--txt2)">${escHtml(d.grouping||'')}</td>
+            <td style="padding:8px 10px;color:var(--txt);font-weight:600">${escHtml(d.composition||'')}</td>
+            <td style="padding:8px 10px;text-align:right;font-family:'DM Mono',monospace;font-weight:700;color:var(--c-blue)">${d.dryCoating}</td>
+            <td style="padding:8px 10px;text-align:right;font-family:'DM Mono',monospace;color:var(--txt2)">${d.rSolid}</td>
+            <td style="padding:8px 6px;text-align:center">
+              <button onclick="event.stopPropagation();editDCRow(${realIdx})" style="background:none;border:none;color:var(--txt3);cursor:pointer;font-size:12px;padding:2px 5px"><i class="fas fa-pencil-alt"></i></button>
+              <button onclick="event.stopPropagation();deleteDCRow(${realIdx})" style="background:none;border:none;color:var(--c-red);cursor:pointer;font-size:12px;padding:2px 5px"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+function selectDCRow(idx) {
+  const d = masterDryCoating[idx];
+  if (!d) return;
+  if (d.type === 'AC') {
+    // Anchor Coating → fill anchorCoat & runningSolidAnchor
+    document.getElementById('anchorCoat').value         = d.dryCoating || 0;
+    document.getElementById('runningSolidAnchor').value = d.rSolid || 0;
+    showToast('Anchor Coating applied: ' + d.composition, 'success');
+  } else {
+    // AD (Adhesive/Dry Coating) → fill dryCoatingWeight & runningSolid
+    document.getElementById('dryCoatingWeight').value = d.dryCoating || 0;
+    document.getElementById('runningSolid').value     = d.rSolid || 0;
+    showToast('Dry Coating applied: ' + d.composition, 'success');
+  }
+  mMarkDirty();
+  closeDryCoatingModal();
+}
+function editDCRow(idx) {
+  const d = masterDryCoating[idx];
+  if (!d) return;
+  document.getElementById('dcFormType').value        = d.type || 'AD';
+  document.getElementById('dcFormGrouping').value    = d.grouping || '';
+  document.getElementById('dcFormComposition').value = d.composition || '';
+  document.getElementById('dcFormDry').value         = d.dryCoating || '';
+  document.getElementById('dcFormRSolid').value      = d.rSolid || '';
+  document.getElementById('dcFormEditIdx').value     = idx;
+}
+function clearDCForm() {
+  ['dcFormGrouping','dcFormComposition','dcFormDry','dcFormRSolid'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('dcFormType').value     = 'AD';
+  document.getElementById('dcFormEditIdx').value  = '';
+}
+function saveDCRow() {
+  const type        = document.getElementById('dcFormType').value;
+  const grouping    = document.getElementById('dcFormGrouping').value.trim();
+  const composition = document.getElementById('dcFormComposition').value.trim();
+  const dryCoating  = parseFloat(document.getElementById('dcFormDry').value) || 0;
+  const rSolid      = parseFloat(document.getElementById('dcFormRSolid').value) || 0;
+  if (!composition) { showToast('Composition is required','error'); return; }
+  const editIdx = document.getElementById('dcFormEditIdx').value;
+  const row = { type, grouping, composition, dryCoating, rSolid };
+  if (editIdx !== '') {
+    masterDryCoating[parseInt(editIdx)] = { ...masterDryCoating[parseInt(editIdx)], ...row };
+    showToast('Row updated','success');
+  } else {
+    row.id = Date.now();
+    masterDryCoating.push(row);
+    showToast('Row added','success');
+  }
+  // Persist to IDB
+  openDB().then(db => {
+    const tx = db.transaction('dryCoating','readwrite');
+    const store = tx.objectStore('dryCoating');
+    if (editIdx !== '') store.put(masterDryCoating[parseInt(editIdx)]);
+    else store.add(row);
+  }).catch(()=>{});
+  clearDCForm();
+  renderDCTable();
+}
+function deleteDCRow(idx) {
+  const d = masterDryCoating[idx];
+  if (!d) return;
+  if (!confirm('Delete "' + d.composition + '"?')) return;
+  // Remove from IDB
+  if (d.id) {
+    openDB().then(db => {
+      const tx = db.transaction('dryCoating','readwrite');
+      tx.objectStore('dryCoating').delete(d.id);
+    }).catch(()=>{});
+  }
+  masterDryCoating.splice(idx, 1);
+  renderDCTable();
+}
+
+// ── VIEW SUMMARY FOR ANY ESTIMATION ──────────────────────
+function viewEstSummary(id) {
+  const est = estimations.find(e => e.id === id);
+  if (!est) { showToast('Estimation not found','error'); return; }
+  buildSummary(est);
+  showScreen('screenSummary');
+}
+
+// ── POPULATE GROUPING PRODUCT DROPDOWN ────────────────────
+function populateGroupingSelect() {
+  const sel = document.getElementById('groupingProduct');
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = '<option value="">— select —</option>';
+  masterGroupingProduct.forEach(g => {
+    const o = document.createElement('option');
+    o.value = g.name;
+    o.textContent = g.name + (g.scope ? ' · '+g.scope : '') + (g.categoryTier ? ' ('+g.categoryTier+')' : '');
+    sel.appendChild(o);
+  });
+  if (current) sel.value = current;
+}
+
+
+
+// ── APPLY DRY COATING PRESET ──────────────────────────────
+function applyDryCoatingPreset(idx) {
+  if (idx === '') return;
+  const d = masterDryCoating[parseInt(idx)];
+  if (!d) return;
+  document.getElementById('dryCoatingWeight').value = d.dryCoating || 0;
+  document.getElementById('runningSolid').value = d.rSolid || 0;
+  mMarkDirty();
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── CLOSE MODAL ON BACKDROP ─────────────────────────────────
+document.getElementById('matModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSheet();
+});
+document.getElementById('dryCoatingModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDryCoatingModal();
+});
+document.getElementById('importModal').addEventListener('click', function(e) {
+  if (e.target === this) closeImportModal();
+});
+
+// ── INIT ───────────────────────────────────────────────────
+(function init() {
+  try {
+    const user = localStorage.getItem('cirrus_session_user');
+    if (user) {
+      document.getElementById('loginScreen').classList.remove('show');
+      document.getElementById('app').style.display = 'flex';
+      loadAppData(user);
+    }
+  } catch(e) {}
+})();
+</script>
+<!-- IMPORT DATA MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal-sheet" style="max-height:88vh">
+    <div class="sheet-handle"></div>
+    <div class="sheet-hdr">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div class="sheet-title"><i class="fas fa-file-import" style="color:var(--c-orange);margin-right:6px"></i>Import from v15 Backup</div>
+          <div class="sheet-sub">Load file cirrus_backup_*.json dari desktop</div>
+        </div>
+        <button class="hdr-btn" onclick="closeImportModal()"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="sheet-body">
+
+      <!-- Step 1: pick file -->
+      <div style="background:var(--bg3);border:1px solid var(--line2);border-radius:var(--r);padding:14px;margin-bottom:10px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3);margin-bottom:8px">Step 1 — Pilih File Backup</div>
+        <label style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:44px;border:1.5px dashed var(--c-orange);border-radius:var(--r-sm);color:var(--c-orange);font-size:13px;font-weight:600;cursor:pointer">
+          <i class="fas fa-folder-open"></i> Pilih File .json
+          <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="previewImport()">
+        </label>
+        <div id="importFileName" style="font-size:11px;color:var(--txt3);margin-top:6px;text-align:center"></div>
+      </div>
+
+      <!-- Step 2: preview -->
+      <div id="importPreviewWrap" style="display:none">
+        <div style="background:var(--bg3);border:1px solid var(--line2);border-radius:var(--r);padding:14px;margin-bottom:10px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3);margin-bottom:10px">Step 2 — Pilih Data yang Mau Di-import</div>
+          <div id="importCheckboxes" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+
+        <!-- Warning -->
+        <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:var(--r);padding:10px 12px;margin-bottom:10px;font-size:11px;color:var(--c-orange);display:flex;gap:8px;align-items:flex-start">
+          <i class="fas fa-exclamation-triangle" style="margin-top:1px;flex-shrink:0"></i>
+          <span>Data yang ada di IDB mobile akan <strong>diganti</strong> sesuai pilihan. Data lain tetap aman.</span>
+        </div>
+
+        <!-- Import mode -->
+        <div style="background:var(--bg3);border:1px solid var(--line2);border-radius:var(--r);padding:12px;margin-bottom:10px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3);margin-bottom:8px">Mode Import</div>
+          <div style="display:flex;gap:8px">
+            <div class="vat-opt active" id="importModeReplace" onclick="setImportMode('replace')">Replace All</div>
+            <div class="vat-opt" id="importModeMerge" onclick="setImportMode('merge')">Merge (keep existing)</div>
+          </div>
+        </div>
+
+        <button class="btn-full primary" onclick="doImport()" style="margin-bottom:6px">
+          <i class="fas fa-database"></i> Import Sekarang
+        </button>
+      </div>
+
+      <!-- Result -->
+      <div id="importResult" style="display:none;background:var(--c-green-lt);border:1px solid rgba(16,185,129,0.3);border-radius:var(--r);padding:14px;font-size:12px;color:var(--c-green)">
+        <i class="fas fa-check-circle"></i> <span id="importResultMsg"></span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- DRY COATING TABLE MODAL -->
+<div class="modal-overlay" id="dryCoatingModal">
+  <div class="modal-sheet" style="max-height:90vh">
+    <div class="sheet-handle"></div>
+    <div class="sheet-hdr">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div class="sheet-title">Dry Coating Table</div>
+          <div class="sheet-sub">Tap row to auto-fill · Swipe to add new</div>
+        </div>
+        <button class="hdr-btn" onclick="closeDryCoatingModal()" style="background:var(--bg3);border-color:var(--line2)"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="sheet-search" style="margin-top:8px">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search composition, type…" id="dcSearch" oninput="renderDCTable()">
+      </div>
+    </div>
+    <div class="sheet-body" style="padding:0" id="dcTableWrap">
+      <!-- table rendered here -->
+    </div>
+    <!-- Add row form -->
+    <div style="padding:10px 14px;border-top:1px solid var(--line);background:var(--bg3)">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt3);margin-bottom:8px">Add / Edit Row</div>
+      <div class="mfield-row" style="margin-bottom:7px">
+        <div class="mfield">
+          <label>Type</label>
+          <select id="dcFormType" style="font-size:12px">
+            <option value="AD">AD (Adhesive)</option>
+            <option value="AC">AC (Anchor Coat)</option>
+          </select>
+        </div>
+        <div class="mfield">
+          <label>Grouping</label>
+          <input type="text" id="dcFormGrouping" placeholder="e.g. Gravure" style="font-size:12px">
+        </div>
+      </div>
+      <div class="mfield-row" style="margin-bottom:7px">
+        <div class="mfield">
+          <label>Composition</label>
+          <input type="text" id="dcFormComposition" placeholder="e.g. OPP/PE" style="font-size:12px">
+        </div>
+        <div class="mfield">
+          <label>Dry Coating</label>
+          <input type="number" id="dcFormDry" placeholder="2.5" step="0.1" style="font-size:12px">
+        </div>
+      </div>
+      <div class="mfield-row" style="margin-bottom:8px">
+        <div class="mfield">
+          <label>Running Solid</label>
+          <input type="number" id="dcFormRSolid" placeholder="0" step="0.1" style="font-size:12px">
+        </div>
+        <div class="mfield" style="display:flex;align-items:flex-end">
+          <input type="hidden" id="dcFormEditIdx" value="">
+        </div>
+      </div>
+      <div style="display:flex;gap:7px">
+        <button class="btn-full ghost" onclick="clearDCForm()" style="flex:0 0 80px;height:38px;font-size:12px"><i class="fas fa-times"></i> Clear</button>
+        <button class="btn-full primary" onclick="saveDCRow()" style="height:38px;font-size:12px"><i class="fas fa-save"></i> Save Row</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ── FONT SIZE LOCK (prevent Android WebView scaling) ──────
+(function lockFontSize() {
+  function enforce() {
+    document.documentElement.style.fontSize = '14px';
+    document.documentElement.style.webkitTextSizeAdjust = 'none';
+    document.documentElement.style.textSizeAdjust = 'none';
+  }
+  enforce();
+  document.addEventListener('DOMContentLoaded', enforce);
+  window.addEventListener('load', enforce);
+  // Also enforce after fonts load
+  if (document.fonts) {
+    document.fonts.ready.then(enforce);
+  }
+  // MutationObserver as last resort
+  const obs = new MutationObserver(enforce);
+  obs.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+})();
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  const swCode = `
+const CACHE = 'adara-field-v1';
+const ASSETS = ['./'];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+  ));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => caches.match('./')))
+  );
+});`;
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  const url  = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url).catch(()=>{});
+}
+</script>
+</body>
+</html>
+
+
+
+
+
